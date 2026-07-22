@@ -8,3 +8,8 @@
 - `deci` is not very well known, while `nano` is extremely common.
 
 Written in [Go](https://go.dev/) with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
+
+## License
+
+This project is under an MIT License. See [LICENSE](LICENSE) for more
+information.

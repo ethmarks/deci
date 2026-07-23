@@ -1,10 +1,12 @@
 package main
 
 import (
-	tea "charm.land/bubbletea/v2"
 	"fmt"
+	"log"
 	"os"
 	"strings"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 type pos struct {
@@ -18,7 +20,7 @@ type model struct {
 }
 
 func initialModel() model {
-	defaultLines := make([]string, 5)
+	defaultLines := make([]string, 0)
 
 	for i := range defaultLines {
 		defaultLines[i] = "ahoy, world!"
@@ -30,6 +32,21 @@ func initialModel() model {
 	}
 }
 
+type readFileMsg struct{ lines []string }
+
+func readFileCmd(filename string) tea.Cmd {
+	return func() tea.Msg {
+		data, err := os.ReadFile(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		lines := strings.Split(string(data), "\n")
+
+		return readFileMsg{lines}
+	}
+}
+
 func insertAt(line string, char string, index int) string {
 	before := line[:index]
 	after := line[index:]
@@ -38,12 +55,15 @@ func insertAt(line string, char string, index int) string {
 }
 
 func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
-	return nil
+	return readFileCmd("test.txt")
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+
+	case readFileMsg:
+		m.lines = msg.lines
+		return m, nil
 
 	// Is it a key press?
 	case tea.KeyPressMsg:

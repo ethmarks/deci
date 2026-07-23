@@ -14,25 +14,25 @@ type pos struct {
 }
 
 type model struct {
-	lines  []string
-	cursor pos
-	err    error
+	filename string
+	lines    []string
+	cursor   pos
+	status   string
+	err      error
 }
 
 type errMsg struct{ err error }
 type readFileMsg struct{ lines []string }
+type statusMsg struct{ status string }
 
 func initialModel() model {
 	defaultLines := make([]string, 0)
 
-	for i := range defaultLines {
-		defaultLines[i] = "ahoy, world!"
-	}
-
 	return model{
-		lines:  defaultLines,
-		cursor: pos{},
-		err:    nil,
+		filename: "test.txt",
+		lines:    defaultLines,
+		cursor:   pos{},
+		status:   "",
 	}
 }
 
@@ -49,6 +49,24 @@ func readFileCmd(filename string) tea.Cmd {
 	}
 }
 
+func writeFileCmd(filename string, lines []string) tea.Cmd {
+	return func() tea.Msg {
+		data := []byte(strings.Join(lines, "\n"))
+
+		// no idea what it means but its the one they use in the docs
+		// https://pkg.go.dev/os#WriteFile
+		perm := os.FileMode(0666)
+
+		err := os.WriteFile(filename, data, perm)
+
+		if err != nil {
+			return errMsg{err}
+		}
+
+		return statusMsg{fmt.Sprintf("Wrote %v lines", len(lines))}
+	}
+}
+
 func insertAt(line string, char string, index int) string {
 	before := line[:index]
 	after := line[index:]
@@ -57,7 +75,7 @@ func insertAt(line string, char string, index int) string {
 }
 
 func (m model) Init() tea.Cmd {
-	return readFileCmd("test.txt")
+	return readFileCmd(m.filename)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -74,33 +92,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		// These keys should exit the program.
-		case "ctrl+c", "q":
+		case "ctrl+c", "ctrl+x":
 			return m, tea.Quit
 
-			/**
-			// The "up" and "k" keys move the cursor up
-			case "up", "k":
-				if m.cursor > 0 {
-					m.cursor--
-				}
+		// These keys should write the lines
+		case "ctrl+s", "ctrl+o":
+			return m, writeFileCmd(m.filename, m.lines)
 
-			// The "down" and "j" keys move the cursor down
-			case "down", "j":
-				if m.cursor < len(m.choices)-1 {
-					m.cursor++
-				}
-
-			// The "enter" key and the space bar toggle the selected state
-			// for the item that the cursor is pointing at.
-			case "enter", "space":
-				_, ok := m.selected[m.cursor]
-				if ok {
-					delete(m.selected, m.cursor)
-				} else {
-					m.selected[m.cursor] = struct{}{}
-				}
-			*/
+		// All other keys
+		default:
+			m.status = ""
+			return m, nil
 		}
+
+	case statusMsg:
+		m.status = msg.status
+		return m, nil
 
 	case errMsg:
 		m.err = msg.err
@@ -117,7 +124,17 @@ func (m model) View() tea.View {
 		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
 	}
 
-	s := strings.Join(m.lines, "\n")
+	// copy of m.lines
+	output := append([]string(nil), m.lines...)
+
+	if m.status != "" {
+		if len(output) == 0 {
+			return tea.NewView(m.status)
+		}
+		output[len(output)-1] = m.status
+	}
+
+	s := strings.Join(output, "\n")
 
 	// Send the UI for rendering
 	return tea.NewView(s)

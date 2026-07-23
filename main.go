@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -17,7 +16,11 @@ type pos struct {
 type model struct {
 	lines  []string
 	cursor pos
+	err    error
 }
+
+type errMsg struct{ err error }
+type readFileMsg struct{ lines []string }
 
 func initialModel() model {
 	defaultLines := make([]string, 0)
@@ -29,16 +32,15 @@ func initialModel() model {
 	return model{
 		lines:  defaultLines,
 		cursor: pos{},
+		err:    nil,
 	}
 }
-
-type readFileMsg struct{ lines []string }
 
 func readFileCmd(filename string) tea.Cmd {
 	return func() tea.Msg {
 		data, err := os.ReadFile(filename)
 		if err != nil {
-			log.Fatal(err)
+			return errMsg{err}
 		}
 
 		lines := strings.Split(string(data), "\n")
@@ -99,6 +101,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			*/
 		}
+
+	case errMsg:
+		m.err = msg.err
+		return m, tea.Quit
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.
@@ -107,6 +113,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() tea.View {
+	if m.err != nil {
+		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
+	}
+
 	s := strings.Join(m.lines, "\n")
 
 	// Send the UI for rendering

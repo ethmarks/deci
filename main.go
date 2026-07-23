@@ -26,7 +26,7 @@ type readFileMsg struct{ lines []string }
 type statusMsg struct{ status string }
 
 func initialModel() model {
-	defaultLines := make([]string, 0)
+	defaultLines := make([]string, 1)
 
 	return model{
 		filename: "test.txt",
@@ -74,6 +74,17 @@ func insertAt(line string, char string, index int) string {
 	return before + char + after
 }
 
+func replaceAt(line string, char string, index int) string {
+	if index < 0 || index >= len(line) {
+		return line
+	}
+
+	before := line[:index]
+	after := line[index+1:]
+
+	return before + char + after
+}
+
 func (m model) Init() tea.Cmd {
 	return readFileCmd(m.filename)
 }
@@ -98,6 +109,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// These keys should write the lines
 		case "ctrl+s", "ctrl+o":
 			return m, writeFileCmd(m.filename, m.lines)
+
+		case "up":
+			if m.cursor.y > 0 {
+				m.cursor.y -= 1
+			}
+			return m, nil
+		case "down":
+			m.cursor.y += 1
+			return m, nil
+		case "left":
+			if m.cursor.x > 0 {
+				m.cursor.x -= 1
+			}
+			return m, nil
+		case "right":
+			m.cursor.x += 1
+			return m, nil
 
 		// All other keys
 		default:
@@ -134,10 +162,12 @@ func (m model) View() tea.View {
 		output[len(output)-1] = m.status
 	}
 
-	s := strings.Join(output, "\n")
+	if len(output) > m.cursor.y {
+		output[m.cursor.y] = replaceAt(output[m.cursor.y], "#", m.cursor.x)
+	}
 
 	// Send the UI for rendering
-	return tea.NewView(s)
+	return tea.NewView(strings.Join(output, "\n"))
 }
 
 func main() {

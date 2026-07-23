@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type pos struct {
@@ -24,6 +25,8 @@ type model struct {
 type errMsg struct{ err error }
 type readFileMsg struct{ lines []string }
 type statusMsg struct{ status string }
+
+var cursor string = lipgloss.NewStyle().Reverse(true).Render(" ")
 
 func initialModel() model {
 	defaultLines := make([]string, 1)
@@ -163,11 +166,15 @@ func (m model) View() tea.View {
 	}
 
 	if len(output) > m.cursor.y {
-		output[m.cursor.y] = replaceAt(output[m.cursor.y], "#", m.cursor.x)
+		output[m.cursor.y] = replaceAt(output[m.cursor.y], cursor, m.cursor.x)
 	}
 
 	// Send the UI for rendering
-	return tea.NewView(strings.Join(output, "\n"))
+	v := tea.NewView(strings.Join(output, "\n"))
+
+	v.AltScreen = true
+
+	return v
 }
 
 func main() {

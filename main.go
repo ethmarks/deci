@@ -147,7 +147,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "down":
-			m.cursor.y += 1
+			if m.cursor.y < len(m.lines)-1 {
+				m.cursor.y += 1
+			}
 			return m, nil
 		case "left":
 			if m.cursor.x > 0 {
@@ -155,7 +157,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "right":
-			m.cursor.x += 1
+			if m.cursor.x < len(m.lines[m.cursor.y]) {
+				m.cursor.x += 1
+			}
 			return m, nil
 
 		// All other keys

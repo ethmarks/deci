@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -227,6 +228,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			m.status = ""
+			return m, nil
+
+		case "enter":
+			line := m.lines[m.cursorY]
+
+			before := line[:m.cursorX]
+			after := string(line[m.cursorX]) + line[m.cursorX+1:]
+
+			m.lines[m.cursorY] = before
+
+			m.lines = slices.Insert(m.lines, m.cursorY+1, after)
+
+			m.cursorPrefX = 0
+			m.cursorX = 0
+			m.cursorY += 1
+
 			return m, nil
 
 		// All other keys

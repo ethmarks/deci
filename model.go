@@ -26,7 +26,7 @@ type model struct {
 }
 
 func initialModel(lines []string, filename string, created bool) model {
-	var status string
+	status := statusTextWelcome
 
 	if created {
 		status = fmt.Sprintf("Created %v", filename)

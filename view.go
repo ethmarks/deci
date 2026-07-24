@@ -35,7 +35,7 @@ func (m model) View() tea.View {
 		return tea.NewView("")
 	}
 
-	grid := makeCharGrid(m.termWidth, m.termHeight)
+	grid := makeCharGrid(colsToDisplay, linesToDisplay)
 
 	// content
 	for lineIndex := range linesToDisplay {
@@ -63,6 +63,9 @@ func (m model) View() tea.View {
 	// header
 	header := getHeader(m.termWidth)
 
+	// status bar
+	statusBar := getStatusBar(m.status, m.termWidth)
+
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))
 	for y, chars := range grid {
@@ -74,7 +77,7 @@ func (m model) View() tea.View {
 	}
 	out := strings.Join(outLines, "\n")
 
-	v := tea.NewView(header + out)
+	v := tea.NewView(header + out + "\n" + statusBar)
 
 	// cursor
 	v.Cursor = &tea.Cursor{

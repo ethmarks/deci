@@ -191,6 +191,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				char = " "
 			}
 
+			// This rejects both modifiers and non-ASCII chars
+			if len(char) != 1 {
+				return m, nil
+			}
+
 			updatedLine := insertAt(m.lines[m.cursor.y], char, m.cursor.x)
 			m.lines[m.cursor.y] = updatedLine
 			m.cursor.x += 1

@@ -35,7 +35,6 @@ type statusMsg struct{ status string }
 const (
 	headerTextLeft  = "  deci 0.0.1"
 	headerTextRight = "by @ethmarks  "
-	cursorText      = " " // will look solid when rendered
 )
 
 var (
@@ -318,7 +317,9 @@ func (m model) View() tea.View {
 	}
 
 	// cursor
-	grid[m.cursorY+m.reservedFromTop][m.cursorX+m.reservedFromLeft] = inverseStyle.Render(cursorText)
+	absCursorY := m.cursorY + m.reservedFromTop
+	absCursorX := m.cursorX + m.reservedFromLeft
+	grid[absCursorY][absCursorX] = inverseStyle.Render(grid[absCursorY][absCursorX])
 
 	// replace empty strings with spaces
 	for y, line := range m.lines {

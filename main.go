@@ -222,12 +222,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "backspace":
 			if m.cursorX > 0 {
-				updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
+				updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX-1)
 				m.lines[m.cursorY] = updatedLine
 				m.cursorX -= 1
 			} else if m.cursorY > 0 {
 				m.cursorX = len(m.lines[m.cursorY-1])
-				m.cursorPrefX = m.cursorX
 
 				m.lines[m.cursorY-1] = m.lines[m.cursorY-1] + m.lines[m.cursorY]
 				m.lines = slices.Delete(m.lines, m.cursorY, m.cursorY+1)
@@ -235,7 +234,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursorY -= 1
 			}
 
+			m.cursorPrefX = m.cursorX
 			m.status = ""
+
 			return m, nil
 
 		case "enter":

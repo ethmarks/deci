@@ -159,7 +159,12 @@ func (m model) getHeader() string {
 	if len(headerTextLeft)+len(headerTextRight) >= m.termWidth {
 		return headerTextLeft + "" + headerTextRight
 	}
-	return fmt.Sprintf("%s%*s", headerTextLeft, m.termWidth-len(headerTextLeft), headerTextRight)
+
+	raw := fmt.Sprintf("%s%*s", headerTextLeft, m.termWidth-len(headerTextLeft), headerTextRight)
+
+	formatted := inverseStyle.Render(raw)
+
+	return formatted
 }
 
 func (m model) Init() tea.Cmd {
@@ -344,19 +349,16 @@ func (m model) View() tea.View {
 	}
 
 	// header
-	headerY := 0
 	header := m.getHeader()
-	for x, char := range header {
-		grid[headerY][x] = inverseStyle.Render(string(char))
-	}
 
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))
 	for y, line := range grid {
 		outLines[y] = strings.Join(line, "")
 	}
+	out := strings.Join(outLines, "\n")
 
-	v := tea.NewView(strings.Join(outLines, "\n"))
+	v := tea.NewView(header + out)
 
 	// cursor
 	absCursorY := m.cursorY + m.reservedFromTop

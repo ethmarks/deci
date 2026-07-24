@@ -215,8 +215,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "right":
 			if m.cursorPrefX < len(m.lines[m.cursorY]) {
-				m.cursorPrefX += 1
-				m.cursorX = m.getClampedCursorX()
+				m.cursorX += 1
+				m.cursorPrefX = m.cursorX
 			}
 			return m, nil
 

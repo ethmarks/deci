@@ -225,6 +225,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
 				m.lines[m.cursorY] = updatedLine
 				m.cursorX -= 1
+			} else if m.cursorY > 0 {
+				m.cursorX = len(m.lines[m.cursorY-1])
+				m.cursorPrefX = m.cursorX
+
+				m.lines[m.cursorY-1] = m.lines[m.cursorY-1] + m.lines[m.cursorY]
+				m.lines = slices.Delete(m.lines, m.cursorY, m.cursorY+1)
+
+				m.cursorY -= 1
 			}
 
 			m.status = ""
@@ -240,9 +248,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.lines = slices.Insert(m.lines, m.cursorY+1, after)
 
-			m.cursorPrefX = 0
-			m.cursorX = 0
 			m.cursorY += 1
+			m.cursorX = 0
+			m.cursorPrefX = m.cursorX
 
 			return m, nil
 

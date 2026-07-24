@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	baseStyle    = lipgloss.NewStyle()
 	inverseStyle = lipgloss.NewStyle().Reverse(true)
 	errStyle     = lipgloss.NewStyle().Foreground(lipgloss.Red).Reverse(true)
 

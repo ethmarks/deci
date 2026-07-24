@@ -1,10 +1,11 @@
 package main
 
 import (
-	tea "charm.land/bubbletea/v2"
 	"fmt"
 	"os"
 	"strings"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 func readFile(filename string) ([]string, error) {

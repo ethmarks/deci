@@ -1,10 +1,11 @@
 package main
 
 import (
-	tea "charm.land/bubbletea/v2"
 	"fmt"
 	"slices"
 	"strings"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 type errMsg struct{ err error }

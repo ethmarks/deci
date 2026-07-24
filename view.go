@@ -1,9 +1,10 @@
 package main
 
 import (
-	tea "charm.land/bubbletea/v2"
 	"fmt"
 	"strings"
+
+	tea "charm.land/bubbletea/v2"
 )
 
 func makeCharGrid(width, height int) [][]string {
@@ -73,7 +74,7 @@ func (m model) View() tea.View {
 		if absCursorY == y {
 			line = cursorLineStyle.Render(line)
 		}
-		outLines[y] = line
+		outLines[y] = baseStyle.Render(line)
 	}
 	out := strings.Join(outLines, "\n")
 

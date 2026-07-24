@@ -2,7 +2,9 @@ package main
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"fmt"
 	"slices"
+	"strings"
 )
 
 type errMsg struct{ err error }
@@ -38,6 +40,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
+	// For status messages.
+	// Display is one-indexed, but the cursor pos is zero-indexed.
+	lineNum := m.cursorY + 1
+	colNum := m.cursorX + 1
+
 	switch key := msg.String(); key {
 
 	// These keys should exit the program.
@@ -54,10 +61,12 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 
 	case "backspace":
 		if m.cursorX > 0 {
+			m.status = fmt.Sprintf("removed %v:%v", lineNum, colNum-1)
 			updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
 			m.lines[m.cursorY] = updatedLine
 			m.cursorX -= 1
 		} else if m.cursorY > 0 {
+			m.status = fmt.Sprintf("merged line %v with %v", lineNum, lineNum-1)
 			m.cursorX = len(m.lines[m.cursorY-1])
 
 			m.lines[m.cursorY-1] = m.lines[m.cursorY-1] + m.lines[m.cursorY]
@@ -67,21 +76,21 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		}
 
 		m.cursorPrefX = m.cursorX
-		m.status = ""
 
 		return m, nil
 
 	case "delete":
 		if m.cursorX < len(m.lines[m.cursorY]) {
+			m.status = fmt.Sprintf("removed %v:%v", lineNum, colNum)
 			updatedLine := deleteAt(m.lines[m.cursorY], m.cursorX)
 			m.lines[m.cursorY] = updatedLine
 		} else if m.cursorY < len(m.lines)-1 {
+			m.status = fmt.Sprintf("merged line %v with %v", lineNum+1, lineNum)
 			m.lines[m.cursorY] = m.lines[m.cursorY] + m.lines[m.cursorY+1]
 			m.lines = slices.Delete(m.lines, m.cursorY+1, m.cursorY+2)
 		}
 
 		m.cursorPrefX = m.cursorX
-		m.status = ""
 
 		return m, nil
 
@@ -93,6 +102,14 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 
 		if m.cursorX < len(line)-1 {
 			after = string(line[m.cursorX]) + line[m.cursorX+1:]
+		}
+
+		if strings.TrimSpace(before) == "" {
+			m.status = fmt.Sprintf("created new line at %v", lineNum)
+		} else if strings.TrimSpace(after) == "" {
+			m.status = fmt.Sprintf("created new line at %v", lineNum+1)
+		} else {
+			m.status = fmt.Sprintf("split line %v to line %v", lineNum, lineNum+1)
 		}
 
 		m.lines[m.cursorY] = before
@@ -109,32 +126,38 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 
 		return m, nil
 
+	case "space":
+		m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], " ", m.cursorX)
+		m.cursorX += 1
+		m.cursorPrefX = m.cursorX
+		m.status = fmt.Sprintf("inserted space at %v:%v", lineNum, colNum)
+
+		return m, nil
+
 	case "tab":
 		for range spacesPerTab {
 			m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], " ", m.cursorX)
 			m.cursorX += 1
 		}
 		m.cursorPrefX = m.cursorX
+		m.status = fmt.Sprintf("inserted tab at %v:%v", lineNum, colNum)
 
 		return m, nil
 
 	// All other keys
 	default:
-		if key == "space" {
-			key = " "
-		}
-
 		// This rejects both modifiers and non-ASCII chars
 		if len(key) != 1 {
 			return m, nil
 		}
+
+		m.status = fmt.Sprintf("inserted '%v' at %v:%v", key, lineNum, colNum)
 
 		m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], key, m.cursorX)
 
 		m.cursorX += 1
 		m.cursorPrefX = m.cursorX
 
-		m.status = ""
 		return m, nil
 	}
 }

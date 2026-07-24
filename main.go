@@ -21,6 +21,7 @@ type model struct {
 	cursor   pos
 	status   string
 	err      error
+	termSize pos // width and height in chars
 }
 
 type errMsg struct{ err error }
@@ -138,6 +139,18 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
+	case errMsg:
+		m.err = msg.err
+		return m, nil
+
+	case statusMsg:
+		m.status = msg.status
+		return m, nil
+
+	case tea.WindowSizeMsg:
+		m.termSize.x = msg.Width
+		m.termSize.y = msg.Height
+
 	// Is it a key press?
 	case tea.KeyPressMsg:
 
@@ -203,14 +216,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.status = ""
 			return m, nil
 		}
-
-	case statusMsg:
-		m.status = msg.status
-		return m, nil
-
-	case errMsg:
-		m.err = msg.err
-		return m, nil
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.
@@ -218,27 +223,46 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
+func makeCharGrid(termSize pos) [][]string {
+	grid := make([][]string, termSize.y)
+
+	for y, _ := range grid {
+		row := make([]string, termSize.x)
+		for x, _ := range row {
+			row[x] = " "
+		}
+		grid[y] = row
+	}
+
+	return grid
+}
+
 func (m model) View() tea.View {
 	if m.err != nil {
 		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
 	}
 
-	// copy of m.lines
-	output := append([]string(nil), m.lines...)
+	if m.termSize.x < 1 || m.termSize.y < 1 {
+		return tea.NewView("")
+	}
 
-	if m.status != "" {
-		if len(output) == 0 {
-			return tea.NewView(m.status)
+	grid := makeCharGrid(m.termSize)
+
+	for y, line := range m.lines {
+		for x, char := range line {
+			grid[y][x] = string(char)
 		}
-		output[len(output)-1] = m.status
 	}
 
-	if len(output) > m.cursor.y {
-		output[m.cursor.y] = overwriteAt(output[m.cursor.y], cursor, m.cursor.x)
-	}
+	grid[m.cursor.y][m.cursor.x] = cursor
 
 	// Send the UI for rendering
-	v := tea.NewView(strings.Join(output, "\n"))
+	outLines := make([]string, len(grid))
+	for y, line := range grid {
+		outLines[y] = strings.Join(line, "")
+	}
+
+	v := tea.NewView(strings.Join(outLines, "\n"))
 
 	v.AltScreen = true
 

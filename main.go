@@ -22,12 +22,25 @@ type model struct {
 
 	termWidth  int
 	termHeight int
+
+	reservedFromTop    int
+	reservedFromBottom int
+	reservedFromLeft   int
+	reservedFromRight  int
 }
 
 type errMsg struct{ err error }
 type statusMsg struct{ status string }
 
-var cursor string = lipgloss.NewStyle().Reverse(true).Render(" ")
+const (
+	headerTextLeft  = "  deci 0.0.1"
+	headerTextRight = "by @ethmarks  "
+	cursorText      = " " // will look solid when rendered
+)
+
+var (
+	inverseStyle = lipgloss.NewStyle().Reverse(true)
+)
 
 func initialModel(lines []string, filename string, created bool) model {
 	var status string
@@ -40,6 +53,11 @@ func initialModel(lines []string, filename string, created bool) model {
 		filename: filename,
 		lines:    lines,
 		status:   status,
+
+		reservedFromTop:    1, // for the header
+		reservedFromBottom: 2, // for the keybinds and status bar
+		reservedFromLeft:   0, // will be updated for the line nums
+		reservedFromRight:  0, // unused
 	}
 }
 
@@ -135,6 +153,13 @@ func (m model) getClampedCursorX() int {
 	cursorLine := m.lines[m.cursorY]
 	clampedX := min(m.cursorPrefX, len(cursorLine))
 	return clampedX
+}
+
+func (m model) getHeader() string {
+	if len(headerTextLeft)+len(headerTextRight) >= m.termWidth {
+		return headerTextLeft + "" + headerTextRight
+	}
+	return fmt.Sprintf("%s%*s", headerTextLeft, m.termWidth-len(headerTextLeft), headerTextRight)
 }
 
 func (m model) Init() tea.Cmd {
@@ -253,20 +278,49 @@ func (m model) View() tea.View {
 		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
 	}
 
-	if m.termWidth < 1 || m.termHeight < 1 {
+	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
+	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
+
+	if linesToDisplay < 1 || colsToDisplay < 1 {
 		return tea.NewView("")
 	}
 
 	grid := makeCharGrid(m.termWidth, m.termHeight)
 
-	for y, line := range m.lines {
-		for x, char := range line {
+	// content
+	for lineIndex := range linesToDisplay {
+		y := lineIndex + m.reservedFromTop
+
+		if y >= m.termHeight || lineIndex >= len(m.lines) {
+			break
+		}
+
+		line := m.lines[lineIndex]
+
+		for charIndex := range colsToDisplay {
+			x := charIndex + m.reservedFromLeft
+
+			if x >= m.termWidth || charIndex >= len(line) {
+				break
+			}
+
+			char := line[charIndex]
+
 			grid[y][x] = string(char)
 		}
 	}
 
-	grid[m.cursorY][m.cursorX] = cursor
+	// header
+	headerY := 0
+	header := m.getHeader()
+	for x, char := range header {
+		grid[headerY][x] = inverseStyle.Render(string(char))
+	}
 
+	// cursor
+	grid[m.cursorY+m.reservedFromTop][m.cursorX+m.reservedFromLeft] = inverseStyle.Render(cursorText)
+
+	// replace empty strings with spaces
 	for y, line := range m.lines {
 		for x, char := range line {
 			if string(char) == "" {

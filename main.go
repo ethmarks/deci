@@ -23,7 +23,10 @@ type model struct {
 }
 
 type errMsg struct{ err error }
-type readFileMsg struct{ lines []string }
+type readFileMsg struct {
+	lines   []string
+	created bool
+}
 type statusMsg struct{ status string }
 
 var cursor string = lipgloss.NewStyle().Reverse(true).Render(" ")
@@ -39,16 +42,51 @@ func initialModel() model {
 	}
 }
 
+func readFile(filename string) ([]string, error) {
+	var lines []string
+
+	data, err := os.ReadFile(filename)
+
+	if err == nil {
+		lines = strings.Split(string(data), "\n")
+	}
+
+	return lines, err
+}
+
+func createFile(filename string) error {
+	file, err := os.Create(filename)
+
+	if err != nil {
+		return err
+	}
+
+	file.Close()
+	return nil
+}
+
 func readFileCmd(filename string) tea.Cmd {
 	return func() tea.Msg {
-		data, err := os.ReadFile(filename)
+		created := false
+
+		lines, err := readFile(filename)
+
+		if err != nil {
+			// if we got an error reading it the first time, create it and try
+			// reading the file one more time.
+			err = createFile(filename)
+
+			if err == nil {
+				created = true
+				lines, err = readFile(filename)
+			}
+		}
+
 		if err != nil {
 			return errMsg{err}
 		}
 
-		lines := strings.Split(string(data), "\n")
-
-		return readFileMsg{lines}
+		return readFileMsg{lines, created}
 	}
 }
 
@@ -97,6 +135,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case readFileMsg:
 		m.lines = msg.lines
+
+		if msg.created {
+			m.status = fmt.Sprintf("Created %v", m.filename)
+		}
+
 		return m, nil
 
 	// Is it a key press?
@@ -142,7 +185,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case errMsg:
 		m.err = msg.err
-		return m, tea.Quit
+		return m, nil
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.

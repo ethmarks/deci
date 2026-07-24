@@ -50,7 +50,7 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 
 	case "backspace":
 		if m.cursorX > 0 {
-			updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX-1)
+			updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
 			m.lines[m.cursorY] = updatedLine
 			m.cursorX -= 1
 		} else if m.cursorY > 0 {
@@ -60,6 +60,20 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			m.lines = slices.Delete(m.lines, m.cursorY, m.cursorY+1)
 
 			m.cursorY -= 1
+		}
+
+		m.cursorPrefX = m.cursorX
+		m.status = ""
+
+		return m, nil
+
+	case "delete":
+		if m.cursorX < len(m.lines[m.cursorY]) {
+			updatedLine := deleteAt(m.lines[m.cursorY], m.cursorX)
+			m.lines[m.cursorY] = updatedLine
+		} else if m.cursorY < len(m.lines)-1 {
+			m.lines[m.cursorY] = m.lines[m.cursorY] + m.lines[m.cursorY+1]
+			m.lines = slices.Delete(m.lines, m.cursorY+1, m.cursorY+2)
 		}
 
 		m.cursorPrefX = m.cursorX
@@ -140,32 +154,32 @@ func (m model) handleCursorMove(key string) model {
 }
 
 func insertAt(line string, char string, index int) string {
-	before := line[:index]
-	after := line[index:]
-
-	return before + char + after
+	if index < 0 || index > len(line) {
+		return line
+	}
+	return line[:index] + char + line[index:]
 }
 
 func overwriteAt(line string, char string, index int) string {
 	if index < 0 || index >= len(line) {
 		return line
 	}
-
-	before := line[:index]
-	after := line[index+1:]
-
-	return before + char + after
+	return line[:index] + char + line[index+1:]
 }
 
 func backspaceAt(line string, index int) string {
-	if index < 0 || index >= len(line) {
+	if index > len(line) {
+		return line
+	}
+	return line[:index-1] + line[index:]
+}
+
+func deleteAt(line string, index int) string {
+	if index >= len(line) {
 		return line
 	}
 
-	before := line[:index]
-	after := line[index+1:]
-
-	return before + after
+	return line[:index] + line[index+1:]
 }
 
 func (m model) getClampedCursorX() int {

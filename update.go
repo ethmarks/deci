@@ -8,6 +8,10 @@ import (
 type errMsg struct{ err error }
 type statusMsg struct{ status string }
 
+const (
+	spacesPerTab = 4
+)
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
@@ -105,6 +109,15 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 
 		return m, nil
 
+	case "tab":
+		for range spacesPerTab {
+			m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], " ", m.cursorX)
+			m.cursorX += 1
+		}
+		m.cursorPrefX = m.cursorX
+
+		return m, nil
+
 	// All other keys
 	default:
 		if key == "space" {
@@ -116,8 +129,7 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 
-		updatedLine := insertAt(m.lines[m.cursorY], key, m.cursorX)
-		m.lines[m.cursorY] = updatedLine
+		m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], key, m.cursorX)
 
 		m.cursorX += 1
 		m.cursorPrefX = m.cursorX

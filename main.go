@@ -10,18 +10,18 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-type pos struct {
-	x int
-	y int
-}
-
 type model struct {
 	filename string
 	lines    []string
-	cursor   pos
 	status   string
 	err      error
-	termSize pos // width and height in chars
+
+	cursorY     int
+	cursorX     int // column of the displayed caret
+	cursorPrefX int // preferred column
+
+	termWidth  int
+	termHeight int
 }
 
 type errMsg struct{ err error }
@@ -37,9 +37,8 @@ func initialModel(lines []string, filename string, created bool) model {
 	}
 
 	return model{
-		filename: "test.txt",
+		filename: filename,
 		lines:    lines,
-		cursor:   pos{},
 		status:   status,
 	}
 }
@@ -132,6 +131,12 @@ func backspaceAt(line string, index int) string {
 	return before + after
 }
 
+func (m model) getClampedCursorX() int {
+	cursorLine := m.lines[m.cursorY]
+	clampedX := min(m.cursorPrefX, len(cursorLine))
+	return clampedX
+}
+
 func (m model) Init() tea.Cmd {
 	return nil
 }
@@ -148,8 +153,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.WindowSizeMsg:
-		m.termSize.x = msg.Width
-		m.termSize.y = msg.Height
+		m.termWidth = msg.Width
+		m.termHeight = msg.Height
 
 	// Is it a key press?
 	case tea.KeyPressMsg:
@@ -166,31 +171,35 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, writeFileCmd(m.filename, m.lines)
 
 		case "up":
-			if m.cursor.y > 0 {
-				m.cursor.y -= 1
+			if m.cursorY > 0 {
+				m.cursorY -= 1
+				m.cursorX = m.getClampedCursorX()
 			}
 			return m, nil
 		case "down":
-			if m.cursor.y < len(m.lines)-1 {
-				m.cursor.y += 1
+			if m.cursorY < len(m.lines)-1 {
+				m.cursorY += 1
+				m.cursorX = m.getClampedCursorX()
 			}
 			return m, nil
 		case "left":
-			if m.cursor.x > 0 {
-				m.cursor.x -= 1
+			if m.cursorPrefX > 0 {
+				m.cursorPrefX -= 1
+				m.cursorX = m.cursorPrefX
 			}
 			return m, nil
 		case "right":
-			if m.cursor.x < len(m.lines[m.cursor.y]) {
-				m.cursor.x += 1
+			if m.cursorPrefX < len(m.lines[m.cursorY]) {
+				m.cursorPrefX += 1
+				m.cursorX = m.getClampedCursorX()
 			}
 			return m, nil
 
 		case "backspace":
-			if m.cursor.x > 0 {
-				updatedLine := backspaceAt(m.lines[m.cursor.y], m.cursor.x)
-				m.lines[m.cursor.y] = updatedLine
-				m.cursor.x -= 1
+			if m.cursorX > 0 {
+				updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
+				m.lines[m.cursorY] = updatedLine
+				m.cursorX -= 1
 			}
 
 			m.status = ""
@@ -209,9 +218,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-			updatedLine := insertAt(m.lines[m.cursor.y], char, m.cursor.x)
-			m.lines[m.cursor.y] = updatedLine
-			m.cursor.x += 1
+			updatedLine := insertAt(m.lines[m.cursorY], char, m.cursorX)
+			m.lines[m.cursorY] = updatedLine
+
+			m.cursorX += 1
+			m.cursorPrefX = m.cursorX
 
 			m.status = ""
 			return m, nil
@@ -223,13 +234,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func makeCharGrid(termSize pos) [][]string {
-	grid := make([][]string, termSize.y)
+func makeCharGrid(width, height int) [][]string {
+	grid := make([][]string, height)
 
 	for y, _ := range grid {
-		row := make([]string, termSize.x)
+		row := make([]string, width)
 		for x, _ := range row {
-			row[x] = " "
+			row[x] = ""
 		}
 		grid[y] = row
 	}
@@ -242,11 +253,11 @@ func (m model) View() tea.View {
 		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
 	}
 
-	if m.termSize.x < 1 || m.termSize.y < 1 {
+	if m.termWidth < 1 || m.termHeight < 1 {
 		return tea.NewView("")
 	}
 
-	grid := makeCharGrid(m.termSize)
+	grid := makeCharGrid(m.termWidth, m.termHeight)
 
 	for y, line := range m.lines {
 		for x, char := range line {
@@ -254,7 +265,15 @@ func (m model) View() tea.View {
 		}
 	}
 
-	grid[m.cursor.y][m.cursor.x] = cursor
+	grid[m.cursorY][m.cursorX] = cursor
+
+	for y, line := range m.lines {
+		for x, char := range line {
+			if string(char) == "" {
+				grid[y][x] = " "
+			}
+		}
+	}
 
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))

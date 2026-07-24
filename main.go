@@ -109,7 +109,7 @@ func insertAt(line string, char string, index int) string {
 	return before + char + after
 }
 
-func replaceAt(line string, char string, index int) string {
+func overwriteAt(line string, char string, index int) string {
 	if index < 0 || index >= len(line) {
 		return line
 	}
@@ -118,6 +118,17 @@ func replaceAt(line string, char string, index int) string {
 	after := line[index+1:]
 
 	return before + char + after
+}
+
+func backspaceAt(line string, index int) string {
+	if index < 0 || index >= len(line) {
+		return line
+	}
+
+	before := line[:index]
+	after := line[index+1:]
+
+	return before + after
 }
 
 func (m model) Init() tea.Cmd {
@@ -160,6 +171,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.cursor.x < len(m.lines[m.cursor.y]) {
 				m.cursor.x += 1
 			}
+			return m, nil
+
+		case "backspace":
+			if m.cursor.x > 0 {
+				updatedLine := backspaceAt(m.lines[m.cursor.y], m.cursor.x)
+				m.lines[m.cursor.y] = updatedLine
+				m.cursor.x -= 1
+			}
+
+			m.status = ""
 			return m, nil
 
 		// All other keys
@@ -208,7 +229,7 @@ func (m model) View() tea.View {
 	}
 
 	if len(output) > m.cursor.y {
-		output[m.cursor.y] = replaceAt(output[m.cursor.y], cursor, m.cursor.x)
+		output[m.cursor.y] = overwriteAt(output[m.cursor.y], cursor, m.cursor.x)
 	}
 
 	// Send the UI for rendering

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -23,27 +24,27 @@ type model struct {
 }
 
 type errMsg struct{ err error }
-type readFileMsg struct {
-	lines   []string
-	created bool
-}
 type statusMsg struct{ status string }
 
 var cursor string = lipgloss.NewStyle().Reverse(true).Render(" ")
 
-func initialModel() model {
-	defaultLines := make([]string, 1)
+func initialModel(lines []string, filename string, created bool) model {
+	var status string
+
+	if created {
+		status = fmt.Sprintf("Created %v", filename)
+	}
 
 	return model{
 		filename: "test.txt",
-		lines:    defaultLines,
+		lines:    lines,
 		cursor:   pos{},
-		status:   "",
+		status:   status,
 	}
 }
 
 func readFile(filename string) ([]string, error) {
-	var lines []string
+	lines := make([]string, 1)
 
 	data, err := os.ReadFile(filename)
 
@@ -65,29 +66,22 @@ func createFile(filename string) error {
 	return nil
 }
 
-func readFileCmd(filename string) tea.Cmd {
-	return func() tea.Msg {
-		created := false
+func readOrCreateFile(filename string) ([]string, error, bool) {
+	lines, err := readFile(filename)
+	created := false
 
-		lines, err := readFile(filename)
+	if err != nil {
+		// if we got an error reading it the first time, create it and try
+		// reading the file one more time.
+		err = createFile(filename)
 
-		if err != nil {
-			// if we got an error reading it the first time, create it and try
-			// reading the file one more time.
-			err = createFile(filename)
-
-			if err == nil {
-				created = true
-				lines, err = readFile(filename)
-			}
+		if err == nil {
+			created = true
+			lines, err = readFile(filename)
 		}
-
-		if err != nil {
-			return errMsg{err}
-		}
-
-		return readFileMsg{lines, created}
 	}
+
+	return lines, err, created
 }
 
 func writeFileCmd(filename string, lines []string) tea.Cmd {
@@ -127,20 +121,11 @@ func replaceAt(line string, char string, index int) string {
 }
 
 func (m model) Init() tea.Cmd {
-	return readFileCmd(m.filename)
+	return nil
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-
-	case readFileMsg:
-		m.lines = msg.lines
-
-		if msg.created {
-			m.status = fmt.Sprintf("Created %v", m.filename)
-		}
-
-		return m, nil
 
 	// Is it a key press?
 	case tea.KeyPressMsg:
@@ -225,7 +210,28 @@ func (m model) View() tea.View {
 }
 
 func main() {
-	p := tea.NewProgram(initialModel())
+	// first arg is always the path of the program
+	args := os.Args
+
+	errStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Red).
+		Reverse(true)
+
+	if len(args) == 1 {
+		log.Fatal(errStyle.Render("You must provide a file as an argument"))
+	} else if len(args) > 2 {
+		log.Fatal(errStyle.Render("Too many arguments!"))
+	}
+
+	filepath := args[1]
+
+	lines, err, created := readOrCreateFile(filepath)
+
+	if err != nil {
+		log.Fatal(errStyle.Render(err.Error()))
+	}
+
+	p := tea.NewProgram(initialModel(lines, filepath, created))
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)

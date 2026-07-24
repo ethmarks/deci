@@ -2,14 +2,8 @@ package main
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
 	"fmt"
 	"strings"
-)
-
-var (
-	inverseStyle = lipgloss.NewStyle().Reverse(true)
-	errStyle     = lipgloss.NewStyle().Foreground(lipgloss.Red).Reverse(true)
 )
 
 func makeCharGrid(width, height int) [][]string {
@@ -33,6 +27,9 @@ func (m model) View() tea.View {
 
 	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
 	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
+
+	absCursorY := m.cursorY + m.reservedFromTop
+	absCursorX := m.cursorX + m.reservedFromLeft
 
 	if linesToDisplay < 1 || colsToDisplay < 1 {
 		return tea.NewView("")
@@ -68,16 +65,18 @@ func (m model) View() tea.View {
 
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))
-	for y, line := range grid {
-		outLines[y] = strings.Join(line, "")
+	for y, chars := range grid {
+		line := strings.Join(chars, "")
+		if absCursorY == y {
+			line = cursorLineStyle.Render(line)
+		}
+		outLines[y] = line
 	}
 	out := strings.Join(outLines, "\n")
 
 	v := tea.NewView(header + out)
 
 	// cursor
-	absCursorY := m.cursorY + m.reservedFromTop
-	absCursorX := m.cursorX + m.reservedFromLeft
 	v.Cursor = &tea.Cursor{
 		Position: tea.Position{
 			X: absCursorX,

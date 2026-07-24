@@ -209,8 +209,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "left":
 			if m.cursorPrefX > 0 {
-				m.cursorPrefX -= 1
-				m.cursorX = m.cursorPrefX
+				m.cursorX -= 1
+				m.cursorPrefX = m.cursorX
 			}
 			return m, nil
 		case "right":

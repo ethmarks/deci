@@ -281,7 +281,7 @@ func makeCharGrid(width, height int) [][]string {
 	for y, _ := range grid {
 		row := make([]string, width)
 		for x, _ := range row {
-			row[x] = ""
+			row[x] = " "
 		}
 		grid[y] = row
 	}
@@ -337,15 +337,6 @@ func (m model) View() tea.View {
 	absCursorY := m.cursorY + m.reservedFromTop
 	absCursorX := m.cursorX + m.reservedFromLeft
 	grid[absCursorY][absCursorX] = inverseStyle.Render(grid[absCursorY][absCursorX])
-
-	// replace empty strings with spaces
-	for y, line := range m.lines {
-		for x, char := range line {
-			if string(char) == "" {
-				grid[y][x] = " "
-			}
-		}
-	}
 
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))

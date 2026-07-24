@@ -350,11 +350,6 @@ func (m model) View() tea.View {
 		grid[headerY][x] = inverseStyle.Render(string(char))
 	}
 
-	// cursor
-	absCursorY := m.cursorY + m.reservedFromTop
-	absCursorX := m.cursorX + m.reservedFromLeft
-	grid[absCursorY][absCursorX] = inverseStyle.Render(grid[absCursorY][absCursorX])
-
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))
 	for y, line := range grid {
@@ -362,6 +357,18 @@ func (m model) View() tea.View {
 	}
 
 	v := tea.NewView(strings.Join(outLines, "\n"))
+
+	// cursor
+	absCursorY := m.cursorY + m.reservedFromTop
+	absCursorX := m.cursorX + m.reservedFromLeft
+	v.Cursor = &tea.Cursor{
+		Position: tea.Position{
+			X: absCursorX,
+			Y: absCursorY,
+		},
+		Shape: tea.CursorBar,
+		Blink: true,
+	}
 
 	v.AltScreen = true
 

@@ -243,11 +243,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			line := m.lines[m.cursorY]
 
 			before := line[:m.cursorX]
-			after := string(line[m.cursorX]) + line[m.cursorX+1:]
+			after := ""
+
+			if m.cursorX < len(line)-1 {
+				after = string(line[m.cursorX]) + line[m.cursorX+1:]
+			}
 
 			m.lines[m.cursorY] = before
 
-			m.lines = slices.Insert(m.lines, m.cursorY+1, after)
+			if m.cursorY == len(m.lines)-1 {
+				m.lines = append(m.lines, after)
+			} else {
+				m.lines = slices.Insert(m.lines, m.cursorY+1, after)
+			}
 
 			m.cursorY += 1
 			m.cursorX = 0

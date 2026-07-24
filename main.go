@@ -164,7 +164,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// All other keys
 		default:
-			updatedLine := insertAt(m.lines[m.cursor.y], msg.String(), m.cursor.x)
+			char := msg.String()
+
+			if char == "space" {
+				char = " "
+			}
+
+			updatedLine := insertAt(m.lines[m.cursor.y], char, m.cursor.x)
 			m.lines[m.cursor.y] = updatedLine
 			m.cursor.x += 1
 

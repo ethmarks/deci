@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"charm.land/lipgloss/v2"
 )
 
 const (
-	headerTextLeft  = "deci 0.0.1"
 	headerTextRight = "by @ethmarks"
 	headerPadding   = 2
 
@@ -15,6 +15,8 @@ const (
 )
 
 var (
+	headerTextLeft = fmt.Sprintf("deci %v", version)
+
 	headerLeftStyle  = lipgloss.NewStyle().PaddingLeft(headerPadding)
 	headerRightStyle = lipgloss.NewStyle().PaddingRight(headerPadding)
 	headerStyle      = lipgloss.NewStyle().

@@ -8,6 +8,10 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
+const (
+	version = "0.1.0"
+)
+
 func main() {
 	// first arg is always the path of the program
 	args := os.Args

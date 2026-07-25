@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/anyascii/go"
 )
 
 func readFile(filename string) ([]string, error) {
@@ -14,7 +15,13 @@ func readFile(filename string) ([]string, error) {
 	data, err := os.ReadFile(filename)
 
 	if err == nil {
-		lines = strings.Split(string(data), "\n")
+		s := string(data)
+
+		s = strings.ReplaceAll(s, "\t", strings.Repeat(" ", spacesPerTab))
+
+		s = anyascii.Transliterate(s)
+
+		lines = strings.Split(s, "\n")
 	}
 
 	return lines, err

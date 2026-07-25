@@ -190,7 +190,7 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorX = m.getClampedCursorX()
 		}
 	case "left":
-		if m.cursorPrefX > 0 {
+		if m.cursorX > 0 {
 			m.cursorX -= 1
 			m.cursorPrefX = m.cursorX
 		} else if m.cursorY > 0 {
@@ -199,7 +199,7 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorX = m.cursorPrefX
 		}
 	case "right":
-		if m.cursorPrefX < len(m.lines[m.cursorY]) {
+		if m.cursorX < len(m.lines[m.cursorY]) {
 			m.cursorX += 1
 			m.cursorPrefX = m.cursorX
 		} else if m.cursorY < len(m.lines)-1 {

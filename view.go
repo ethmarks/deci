@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 const (
@@ -84,12 +85,16 @@ func (m model) View() tea.View {
 		}
 
 		lineStyle := baseStyle
+		numStyle := lineNumStyle.Width(m.reservedFromLeft)
 
 		if absCursorY == y {
 			lineStyle = cursorLineStyle
+			numStyle = numStyle.Foreground(lipgloss.White)
 		}
 
-		outLines[y] = lineNumStyle.Width(m.reservedFromLeft).Inherit(lineStyle).Render(lineNum) + lineStyle.Render(line)
+		numStyle = numStyle.Inherit(lineStyle)
+
+		outLines[y] = numStyle.Render(lineNum) + lineStyle.Render(line)
 	}
 	out := strings.Join(outLines, "\n")
 

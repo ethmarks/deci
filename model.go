@@ -39,7 +39,7 @@ func initialModel(lines []string, filename string, created bool) model {
 
 		reservedFromTop:    1, // for the header
 		reservedFromBottom: 2, // for the keybinds and status bar
-		reservedFromLeft:   0, // will be updated for the line nums
+		reservedFromLeft:   0, // for the line nums
 		reservedFromRight:  0, // unused
 	}
 }

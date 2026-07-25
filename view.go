@@ -2,9 +2,15 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
+)
+
+const (
+	lineNumPadding = 1
+	minLineNumMagn = 3
 )
 
 func makeCharGrid(width, height int) [][]string {
@@ -49,7 +55,7 @@ func (m model) View() tea.View {
 		line := m.lines[lineIndex]
 
 		for charIndex := range colsToDisplay {
-			x := charIndex + m.reservedFromLeft
+			x := charIndex
 
 			if x >= m.termWidth || charIndex >= len(line) {
 				break
@@ -71,10 +77,19 @@ func (m model) View() tea.View {
 	outLines := make([]string, len(grid))
 	for y, chars := range grid {
 		line := strings.Join(chars, "")
-		if absCursorY == y {
-			line = cursorLineStyle.Render(line)
+		lineNum := ""
+
+		if y-m.reservedFromTop < len(m.lines) {
+			lineNum = strconv.Itoa(y - m.reservedFromTop + 1)
 		}
-		outLines[y] = baseStyle.Render(line)
+
+		lineStyle := baseStyle
+
+		if absCursorY == y {
+			lineStyle = cursorLineStyle
+		}
+
+		outLines[y] = lineNumStyle.Width(m.reservedFromLeft).Inherit(lineStyle).Render(lineNum) + lineStyle.Render(line)
 	}
 	out := strings.Join(outLines, "\n")
 

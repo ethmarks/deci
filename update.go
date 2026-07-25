@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 
@@ -29,6 +30,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height
+		m.reservedFromLeft = m.getLineMagn()
 
 	// Is it a key press?
 	case tea.KeyPressMsg:
@@ -130,6 +132,8 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		} else {
 			m.lines = slices.Insert(m.lines, m.cursorY+1, after)
 		}
+
+		m.reservedFromLeft = m.getLineMagn()
 
 		m.cursorY += 1
 		m.cursorX = 0
@@ -240,4 +244,12 @@ func (m model) getClampedCursorX() int {
 	cursorLine := m.lines[m.cursorY]
 	clampedX := min(m.cursorPrefX, len(cursorLine))
 	return clampedX
+}
+
+func (m model) getLineMagn() int {
+	lineCount := len(m.lines)
+
+	magn := max(math.Log10(float64(lineCount)), minLineNumMagn)
+
+	return int(math.Ceil(magn)) + lineNumPadding
 }

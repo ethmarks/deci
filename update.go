@@ -183,11 +183,15 @@ func (m model) handleCursorMove(key string) model {
 		if m.cursorY > 0 {
 			m.cursorY -= 1
 			m.cursorX = m.getClampedCursorX()
+		} else {
+			m.cursorX = 0
 		}
 	case "down":
 		if m.cursorY < len(m.lines)-1 {
 			m.cursorY += 1
 			m.cursorX = m.getClampedCursorX()
+		} else {
+			m.cursorX = len(m.lines[m.cursorY])
 		}
 	case "left":
 		if m.cursorX > 0 {

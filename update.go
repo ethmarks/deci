@@ -69,8 +69,8 @@ func (m model) handleKeypress(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			m.lines[m.cursorY] = updatedLine
 			m.cursorX -= 1
 		} else if m.cursorY > 0 {
-			if strings.TrimSpace(m.lines[m.cursorY-1]) == "" {
-				m.status = fmt.Sprintf("removed line %v", lineNum-1)
+			if strings.TrimSpace(m.lines[m.cursorY]) == "" {
+				m.status = fmt.Sprintf("removed line %v", lineNum)
 			} else {
 				m.status = fmt.Sprintf("merged line %v with %v", lineNum, lineNum-1)
 			}

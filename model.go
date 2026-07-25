@@ -23,6 +23,9 @@ type model struct {
 	reservedFromBottom int
 	reservedFromLeft   int
 	reservedFromRight  int
+
+	paneOffsetX int
+	paneOffsetY int
 }
 
 func initialModel(lines []string, filename string, created bool) model {
@@ -39,7 +42,7 @@ func initialModel(lines []string, filename string, created bool) model {
 
 		reservedFromTop:    1, // for the header
 		reservedFromBottom: 2, // for the keybinds and status bar
-		reservedFromLeft:   0, // for the line nums
+		reservedFromLeft:   3, // for the line nums
 		reservedFromRight:  0, // unused
 	}
 }

@@ -31,10 +31,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height
 		m.reservedFromLeft = m.getLineMagn()
+		m = m.updateOffsets()
 
 	// Is it a key press?
 	case tea.KeyPressMsg:
-		return m.handleKeypress(msg)
+		new, cmd := m.handleKeypress(msg)
+
+		m = new.(model).updateOffsets()
+		return m, cmd
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.
@@ -212,6 +216,29 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorPrefX = m.cursorX
 		}
 	}
+	return m
+}
+
+func (m model) updateOffsets() model {
+	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
+	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
+
+	if linesToDisplay < 1 || colsToDisplay < 1 {
+		return m
+	}
+
+	if m.cursorY < m.paneOffsetY {
+		m.paneOffsetY = m.cursorY
+	} else if m.cursorY >= m.paneOffsetY+linesToDisplay {
+		m.paneOffsetY = m.cursorY - linesToDisplay + 1
+	}
+
+	if m.cursorX < m.paneOffsetX {
+		m.paneOffsetX = m.cursorX
+	} else if m.cursorX >= m.paneOffsetX+colsToDisplay {
+		m.paneOffsetX = m.cursorX - colsToDisplay + 1
+	}
+
 	return m
 }
 

@@ -36,8 +36,8 @@ func (m model) View() tea.View {
 	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
 	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
 
-	absCursorY := m.cursorY + m.reservedFromTop
-	absCursorX := m.cursorX + m.reservedFromLeft
+	absCursorY := (m.cursorY - m.paneOffsetY) + m.reservedFromTop
+	absCursorX := (m.cursorX - m.paneOffsetX) + m.reservedFromLeft
 
 	if linesToDisplay < 1 || colsToDisplay < 1 {
 		return tea.NewView("")
@@ -46,25 +46,23 @@ func (m model) View() tea.View {
 	grid := makeCharGrid(colsToDisplay, linesToDisplay)
 
 	// content
-	for lineIndex := range linesToDisplay {
-		y := lineIndex + m.reservedFromTop
+	for gridY := range linesToDisplay {
+		absY := gridY + m.paneOffsetY
 
-		if y >= m.termHeight || lineIndex >= len(m.lines) {
+		if absY >= len(m.lines) {
 			break
 		}
 
-		line := m.lines[lineIndex]
+		line := m.lines[absY]
 
-		for charIndex := range colsToDisplay {
-			x := charIndex
+		for gridX := range colsToDisplay {
+			absX := gridX + m.paneOffsetX
 
-			if x >= m.termWidth || charIndex >= len(line) {
+			if absX >= len(line) {
 				break
 			}
 
-			char := line[charIndex]
-
-			grid[y][x] = string(char)
+			grid[gridY][gridX] = string(line[absX])
 		}
 	}
 
@@ -76,29 +74,29 @@ func (m model) View() tea.View {
 
 	// Send the UI for rendering
 	outLines := make([]string, len(grid))
-	for y, chars := range grid {
+	for gridY, chars := range grid {
+		absY := gridY + m.paneOffsetY
 		line := strings.Join(chars, "")
 		lineNum := ""
 
-		if y-m.reservedFromTop < len(m.lines) {
-			lineNum = strconv.Itoa(y - m.reservedFromTop + 1)
+		if absY < len(m.lines) {
+			lineNum = strconv.Itoa(absY + 1)
 		}
 
 		lineStyle := baseStyle
 		numStyle := lineNumStyle.Width(m.reservedFromLeft)
 
-		if absCursorY == y {
+		if m.cursorY == absY {
 			lineStyle = cursorLineStyle
 			numStyle = numStyle.Foreground(lipgloss.White)
 		}
 
 		numStyle = numStyle.Inherit(lineStyle)
-
-		outLines[y] = numStyle.Render(lineNum) + lineStyle.Render(line)
+		outLines[gridY] = numStyle.Render(lineNum) + lineStyle.Render(line)
 	}
 	out := strings.Join(outLines, "\n")
 
-	v := tea.NewView(header + out + "\n" + statusBar)
+	v := tea.NewView(header + "\n" + out + "\n" + statusBar)
 
 	// cursor
 	v.Cursor = &tea.Cursor{

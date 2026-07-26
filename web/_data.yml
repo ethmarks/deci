@@ -1,51 +1,18 @@
 lang: en
 dateLocale: en-GB
-
-# Whether to only allow dark mode, only allow light mode, or allow both.
-#
-# If set to both, it relies on prefers-color-scheme to determine which theme to
-# use.
-#
-# Set to dark mode only by default because TufteCSS looks best in dark mode, by
-# a lot. I'm only allowing light mode at all because I want to respect the
-# user's agency.
 theme: dark
-
 metas:
-  site: Lume site
-  description: "=description"
-  twitter: ""
-  fediverse: ""
+  site: Deci
+  description: =description
   generator: true
   robots: true
   icon: /uploads/favicon.svg
   lang: =lang
-
 header:
-  # Whether to render the header.
-  #
-  # You can change this globally in _data.yml, but remember that you can
-  # change it on a per-page basis via the frontmatter.
   enabled: true
-
-  # Whether to highlight the currently active section in the nav.
-  #
-  # With the default header styles, this is rendered by lowering the text
-  # underline.
   highlightActive: true
-
-  # The nav items.
-  #
-  # Remember to prefix links to within your site with a forward slash (/).
   items:
     - title: Home
       url: /
-
-    - title: About
-      url: /about
-
-    - title: Blog
-      url: /blog
-
     - title: GitHub
-      url: https://github.com/ethmarks/lume_tufte
+      url: 'https://github.com/ethmarks/deci'

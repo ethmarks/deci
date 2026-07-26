@@ -31,7 +31,7 @@ func (m model) View() tea.View {
 
 	grid := makeCharGrid(colsToDisplay, linesToDisplay)
 
-	grid = renderLines(grid, m.lines, linesToDisplay, colsToDisplay, m.paneOffsetY, m.paneOffsetX)
+	grid = renderLines(grid, *m.lines, linesToDisplay, colsToDisplay, m.paneOffsetY, m.paneOffsetX)
 
 	header := getHeader(m.termWidth)
 
@@ -42,7 +42,7 @@ func (m model) View() tea.View {
 		m.cursorY,
 		m.paneOffsetY,
 		m.reservedFromLeft,
-		len(m.lines),
+		len(*m.lines),
 		m.showNums,
 	)
 

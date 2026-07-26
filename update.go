@@ -39,10 +39,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// These keys should write out.
 		case "ctrl+s", "ctrl+o":
-			return m, writeFileCmd(m.filename, m.lines)
+			return m, writeFileCmd(m.filename, m.editorLines)
 
 		default:
 			m = m.handleEditorKeypress(key)
+
+			// I think if we add or remove lines, the memory address changes
+			// and the pointer becomes stale. Because handleEditorKeypress is
+			// capable of adding and removing lines, we re-address the pointer
+			// just in case.
+			m.lines = &m.editorLines
 
 			m = m.updateOffsets()
 
@@ -60,7 +66,7 @@ func (m model) getLeftReserve() int {
 		return 0
 	}
 
-	lineCount := len(m.lines)
+	lineCount := len(*m.lines)
 
 	magn := max(math.Log10(float64(lineCount)), minLineNumMagn)
 

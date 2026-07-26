@@ -14,8 +14,10 @@ const (
 )
 
 type model struct {
+	lines       *[]string
+	editorLines []string
+
 	filename string
-	lines    []string
 
 	status string
 	err    error
@@ -39,7 +41,7 @@ type model struct {
 	paneOffsetY int
 }
 
-func initialModel(lines []string, filename string, created bool) model {
+func initialModel(editorLines []string, filename string, created bool) model {
 	status := statusTextWelcome
 
 	if created {
@@ -47,8 +49,10 @@ func initialModel(lines []string, filename string, created bool) model {
 	}
 
 	return model{
+		editorLines: editorLines,
+		lines:       &editorLines,
+
 		filename: filename,
-		lines:    lines,
 
 		status: status,
 		mode:   Editor,

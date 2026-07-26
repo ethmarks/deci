@@ -27,7 +27,7 @@ func (m model) handleEditorKeypress(key string) model {
 		return m.handleEnter()
 
 	case "space":
-		m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], " ", m.cursorX)
+		m.editorLines[m.cursorY] = insertAt(m.editorLines[m.cursorY], " ", m.cursorX)
 		m.cursorX += 1
 		m.cursorPrefX = m.cursorX
 		m.status = fmt.Sprintf("inserted space at %v:%v", lineNum, colNum)
@@ -36,7 +36,7 @@ func (m model) handleEditorKeypress(key string) model {
 
 	case "tab":
 		for range spacesPerTab {
-			m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], " ", m.cursorX)
+			m.editorLines[m.cursorY] = insertAt(m.editorLines[m.cursorY], " ", m.cursorX)
 			m.cursorX += 1
 		}
 		m.cursorPrefX = m.cursorX
@@ -53,7 +53,7 @@ func (m model) handleEditorKeypress(key string) model {
 
 		m.status = fmt.Sprintf("inserted '%v' at %v:%v", key, lineNum, colNum)
 
-		m.lines[m.cursorY] = insertAt(m.lines[m.cursorY], key, m.cursorX)
+		m.editorLines[m.cursorY] = insertAt(m.editorLines[m.cursorY], key, m.cursorX)
 
 		m.cursorX += 1
 		m.cursorPrefX = m.cursorX
@@ -70,20 +70,20 @@ func (m model) handleBackspace() model {
 
 	if m.cursorX > 0 {
 		m.status = fmt.Sprintf("removed %v:%v", lineNum, colNum-1)
-		updatedLine := backspaceAt(m.lines[m.cursorY], m.cursorX)
-		m.lines[m.cursorY] = updatedLine
+		updatedLine := backspaceAt(m.editorLines[m.cursorY], m.cursorX)
+		m.editorLines[m.cursorY] = updatedLine
 		m.cursorX -= 1
 	} else if m.cursorY > 0 {
-		if strings.TrimSpace(m.lines[m.cursorY]) == "" {
+		if strings.TrimSpace(m.editorLines[m.cursorY]) == "" {
 			m.status = fmt.Sprintf("removed line %v", lineNum)
 		} else {
 			m.status = fmt.Sprintf("merged line %v with %v", lineNum, lineNum-1)
 		}
 
-		m.cursorX = len(m.lines[m.cursorY-1])
+		m.cursorX = len(m.editorLines[m.cursorY-1])
 
-		m.lines[m.cursorY-1] = m.lines[m.cursorY-1] + m.lines[m.cursorY]
-		m.lines = slices.Delete(m.lines, m.cursorY, m.cursorY+1)
+		m.editorLines[m.cursorY-1] = m.editorLines[m.cursorY-1] + m.editorLines[m.cursorY]
+		m.editorLines = slices.Delete(m.editorLines, m.cursorY, m.cursorY+1)
 
 		m.cursorY -= 1
 	}
@@ -99,19 +99,19 @@ func (m model) handleDelete() model {
 	lineNum := m.cursorY + 1
 	colNum := m.cursorX + 1
 
-	if m.cursorX < len(m.lines[m.cursorY]) {
+	if m.cursorX < len(m.editorLines[m.cursorY]) {
 		m.status = fmt.Sprintf("removed %v:%v", lineNum, colNum)
-		updatedLine := deleteAt(m.lines[m.cursorY], m.cursorX)
-		m.lines[m.cursorY] = updatedLine
-	} else if m.cursorY < len(m.lines)-1 {
-		if strings.TrimSpace(m.lines[m.cursorY]) == "" {
+		updatedLine := deleteAt(m.editorLines[m.cursorY], m.cursorX)
+		m.editorLines[m.cursorY] = updatedLine
+	} else if m.cursorY < len(m.editorLines)-1 {
+		if strings.TrimSpace(m.editorLines[m.cursorY]) == "" {
 			m.status = fmt.Sprintf("removed line %v", lineNum)
 		} else {
 			m.status = fmt.Sprintf("merged line %v with %v", lineNum+1, lineNum)
 		}
 
-		m.lines[m.cursorY] = m.lines[m.cursorY] + m.lines[m.cursorY+1]
-		m.lines = slices.Delete(m.lines, m.cursorY+1, m.cursorY+2)
+		m.editorLines[m.cursorY] = m.editorLines[m.cursorY] + m.editorLines[m.cursorY+1]
+		m.editorLines = slices.Delete(m.editorLines, m.cursorY+1, m.cursorY+2)
 	}
 
 	m.cursorPrefX = m.cursorX
@@ -124,7 +124,7 @@ func (m model) handleEnter() model {
 	// Display is one-indexed, but the cursor pos is zero-indexed.
 	lineNum := m.cursorY + 1
 
-	line := m.lines[m.cursorY]
+	line := m.editorLines[m.cursorY]
 
 	before := line[:m.cursorX]
 	after := ""
@@ -141,12 +141,12 @@ func (m model) handleEnter() model {
 		m.status = fmt.Sprintf("split line %v to line %v", lineNum, lineNum+1)
 	}
 
-	m.lines[m.cursorY] = before
+	m.editorLines[m.cursorY] = before
 
-	if m.cursorY == len(m.lines)-1 {
-		m.lines = append(m.lines, after)
+	if m.cursorY == len(m.editorLines)-1 {
+		m.editorLines = append(m.editorLines, after)
 	} else {
-		m.lines = slices.Insert(m.lines, m.cursorY+1, after)
+		m.editorLines = slices.Insert(m.editorLines, m.cursorY+1, after)
 	}
 
 	m.reservedFromLeft = m.getLeftReserve()

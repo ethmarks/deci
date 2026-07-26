@@ -10,9 +10,11 @@ metas:
   lang: =lang
 header:
   enabled: true
-  highlightActive: true
+  highlightActive: false
   items:
     - title: Home
       url: /
-    - title: GitHub
-      url: 'https://github.com/ethmarks/deci'
+    - title: Download
+      url: "https://github.com/ethmarks/deci/releases"
+    - title: Source
+      url: "https://github.com/ethmarks/deci"

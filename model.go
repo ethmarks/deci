@@ -6,12 +6,20 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
+type Mode int
+
+const (
+	Editor Mode = iota
+	Help
+)
+
 type model struct {
 	filename string
 	lines    []string
 
 	status string
 	err    error
+	mode   Mode
 
 	showNums bool
 
@@ -43,6 +51,7 @@ func initialModel(lines []string, filename string, created bool) model {
 		lines:    lines,
 
 		status: status,
+		mode:   Editor,
 
 		showNums: true,
 

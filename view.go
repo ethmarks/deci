@@ -77,11 +77,6 @@ func (m model) View() tea.View {
 	for gridY, chars := range grid {
 		absY := gridY + m.paneOffsetY
 		line := strings.Join(chars, "")
-		lineNum := ""
-
-		if absY < len(m.lines) {
-			lineNum = strconv.Itoa(absY + 1)
-		}
 
 		lineStyle := baseStyle
 		numStyle := lineNumStyle.Width(m.reservedFromLeft)
@@ -92,7 +87,14 @@ func (m model) View() tea.View {
 		}
 
 		numStyle = numStyle.Inherit(lineStyle)
-		outLines[gridY] = numStyle.Render(lineNum) + lineStyle.Render(line)
+
+		lineNum := ""
+		if m.showNums && absY < len(m.lines) {
+			lineNum = strconv.Itoa(absY + 1)
+			lineNum = numStyle.Render(lineNum)
+		}
+
+		outLines[gridY] = lineNum + lineStyle.Render(line)
 	}
 	out := strings.Join(outLines, "\n")
 

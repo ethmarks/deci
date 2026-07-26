@@ -27,7 +27,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height
-		m.reservedFromLeft = m.getLineMagn()
+		m.reservedFromLeft = m.getLeftReserve()
 		m = m.updateOffsets()
 
 	case tea.KeyPressMsg:
@@ -55,7 +55,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m model) getLineMagn() int {
+func (m model) getLeftReserve() int {
+	if !m.showNums {
+		return 0
+	}
+
 	lineCount := len(m.lines)
 
 	magn := max(math.Log10(float64(lineCount)), minLineNumMagn)

@@ -149,7 +149,7 @@ func (m model) handleEnter() model {
 		m.lines = slices.Insert(m.lines, m.cursorY+1, after)
 	}
 
-	m.reservedFromLeft = m.getLineMagn()
+	m.reservedFromLeft = m.getLeftReserve()
 
 	m.cursorY += 1
 	m.cursorX = 0

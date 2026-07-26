@@ -9,8 +9,11 @@ import (
 type model struct {
 	filename string
 	lines    []string
-	status   string
-	err      error
+
+	status string
+	err    error
+
+	showNums bool
 
 	cursorY     int
 	cursorX     int // column of the displayed caret
@@ -38,11 +41,14 @@ func initialModel(lines []string, filename string, created bool) model {
 	return model{
 		filename: filename,
 		lines:    lines,
-		status:   status,
+
+		status: status,
+
+		showNums: true,
 
 		reservedFromTop:    1, // for the header
 		reservedFromBottom: 2, // for the keybinds and status bar
-		reservedFromLeft:   3, // for the line nums
+		reservedFromLeft:   0, // for the line nums
 		reservedFromRight:  0, // unused
 	}
 }

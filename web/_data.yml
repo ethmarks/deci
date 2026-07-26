@@ -1,0 +1,20 @@
+lang: en
+dateLocale: en-GB
+theme: dark
+metas:
+  site: Deci
+  description: =description
+  generator: true
+  robots: true
+  icon: /uploads/favicon.svg
+  lang: =lang
+header:
+  enabled: true
+  highlightActive: false
+  items:
+    - title: Home
+      url: /
+    - title: Download
+      url: "https://github.com/ethmarks/deci/releases"
+    - title: Source
+      url: "https://github.com/ethmarks/deci"

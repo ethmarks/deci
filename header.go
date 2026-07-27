@@ -10,8 +10,6 @@ import (
 const (
 	headerTextRight = "by @ethmarks"
 	headerPadding   = 2
-
-	statusTextWelcome = "Welcome to deci!"
 )
 
 var (
@@ -22,12 +20,6 @@ var (
 	headerStyle      = lipgloss.NewStyle().
 				Foreground(lipgloss.Black).
 				Background(lipgloss.White)
-
-	statusStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Black).
-			Background(lipgloss.White).
-			Align(lipgloss.Center).
-			Padding(0, 2)
 )
 
 func getHeader(termWidth int) string {
@@ -52,16 +44,4 @@ func getHeader(termWidth int) string {
 	)
 
 	return headerStyle.Width(termWidth).MaxWidth(termWidth).Render(raw)
-}
-
-func getStatusBar(status string, termWidth int) string {
-	if lipgloss.Width(status) >= termWidth {
-		return status
-	}
-
-	content := statusStyle.Render(status)
-
-	placed := lipgloss.PlaceHorizontal(termWidth, lipgloss.Center, content)
-
-	return placed
 }

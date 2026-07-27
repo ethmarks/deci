@@ -6,10 +6,10 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type Screen int
+type screen int
 
 const (
-	Editor Screen = iota
+	Editor screen = iota
 	Help
 )
 
@@ -22,7 +22,7 @@ type model struct {
 
 	status string
 	err    error
-	screen Screen
+	screen screen
 
 	showNums bool
 

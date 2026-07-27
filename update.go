@@ -46,7 +46,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "up", "down", "left", "right":
-			return m.handleCursorMove(key), nil
+			m = m.handleCursorMove(key)
+			m = m.updateOffsets()
+			return m, nil
 
 		case "ctrl+h":
 			m.cursorY = 0

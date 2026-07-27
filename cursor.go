@@ -39,23 +39,23 @@ func (m model) handleCursorMove(key string) model {
 }
 
 func (m model) updateOffsets() model {
-	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
-	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
+	contentRows := m.termHeight - m.reservedFromTop - m.reservedFromBottom
+	contentCols := m.termWidth - m.reservedFromLeft - m.reservedFromRight
 
-	if linesToDisplay < 1 || colsToDisplay < 1 {
+	if contentRows < 1 || contentCols < 1 {
 		return m
 	}
 
 	if m.cursorY < m.paneOffsetY {
 		m.paneOffsetY = m.cursorY
-	} else if m.cursorY >= m.paneOffsetY+linesToDisplay {
-		m.paneOffsetY = m.cursorY - linesToDisplay + 1
+	} else if m.cursorY >= m.paneOffsetY+contentRows {
+		m.paneOffsetY = m.cursorY - contentRows + 1
 	}
 
 	if m.cursorX < m.paneOffsetX {
 		m.paneOffsetX = m.cursorX
-	} else if m.cursorX >= m.paneOffsetX+colsToDisplay {
-		m.paneOffsetX = m.cursorX - colsToDisplay + 1
+	} else if m.cursorX >= m.paneOffsetX+contentCols {
+		m.paneOffsetX = m.cursorX - contentCols + 1
 	}
 
 	return m

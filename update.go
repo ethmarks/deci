@@ -41,19 +41,38 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+s", "ctrl+o":
 			return m, writeFileCmd(m.filename, m.editorLines)
 
+		case "up", "down", "left", "right":
+			return m.handleCursorMove(key), nil
+
+		case "ctrl+h":
+			m.cursorY = 0
+			m.cursorX = 0
+			m.cursorPrefX = m.cursorX
+
+			if m.screen == Help {
+				m.screen = Editor
+				m.status = "switched to editor"
+			} else {
+				m.screen = Help
+				m.status = "switched to help"
+			}
+
 		default:
-			m = m.handleEditorKeypress(key)
+			if m.screen == Editor {
+				m = m.handleEditorKeypress(key)
 
-			// I think if we add or remove lines, the memory address changes
-			// and the pointer becomes stale. Because handleEditorKeypress is
-			// capable of adding and removing lines, we re-address the pointer
-			// just in case.
-			m.lines = &m.editorLines
-
-			m = m.updateOffsets()
-
-			return m, nil
+				m = m.updateOffsets()
+			} else {
+				m.status = "this screen is read-only"
+			}
 		}
+	}
+
+	switch m.screen {
+	case Editor:
+		m.lines = &m.editorLines
+	case Help:
+		m.lines = &m.helpLines
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.

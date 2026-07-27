@@ -6,22 +6,23 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type Mode int
+type Screen int
 
 const (
-	Editor Mode = iota
+	Editor Screen = iota
 	Help
 )
 
 type model struct {
 	lines       *[]string
 	editorLines []string
+	helpLines   []string
 
 	filename string
 
 	status string
 	err    error
-	mode   Mode
+	screen Screen
 
 	showNums bool
 
@@ -49,13 +50,14 @@ func initialModel(editorLines []string, filename string, created bool) model {
 	}
 
 	return model{
-		editorLines: editorLines,
 		lines:       &editorLines,
+		editorLines: editorLines,
+		helpLines:   getHelpLines(),
 
 		filename: filename,
 
 		status: status,
-		mode:   Editor,
+		screen: Editor,
 
 		showNums: true,
 

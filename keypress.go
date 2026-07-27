@@ -14,9 +14,6 @@ func (m model) handleEditorKeypress(key string) model {
 
 	switch key {
 
-	case "up", "down", "left", "right":
-		return m.handleCursorMove(key)
-
 	case "backspace":
 		return m.handleBackspace()
 

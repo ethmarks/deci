@@ -5,8 +5,9 @@ import (
 )
 
 type keybind struct {
-	bind string
-	text string
+	bind      string
+	text      string
+	condition func(m model) bool
 }
 
 var keybinds = []keybind{
@@ -19,8 +20,9 @@ var keybinds = []keybind{
 		text: "Exit",
 	},
 	keybind{
-		bind: "ctrl+o",
-		text: "Write Out",
+		bind:      "ctrl+o",
+		text:      "Write Out",
+		condition: func(m model) bool { return m.screen == Editor },
 	},
 	keybind{
 		bind: "alt+c",
@@ -33,10 +35,14 @@ var (
 	bindTextStyle = lipgloss.NewStyle().PaddingLeft(1).PaddingRight(3)
 )
 
-func getKeybindBar(termWidth int) string {
+func (m model) getKeybindBar() string {
 	bar := ""
 
 	for _, kb := range keybinds {
+		if kb.condition != nil && !kb.condition(m) {
+			continue
+		}
+
 		bind := bindStyle.Render(kb.bind)
 		text := bindTextStyle.Render(kb.text)
 
@@ -44,7 +50,7 @@ func getKeybindBar(termWidth int) string {
 
 		new := lipgloss.JoinHorizontal(lipgloss.Left, bar, s)
 
-		if lipgloss.Width(new) < termWidth {
+		if lipgloss.Width(new) < m.termWidth {
 			bar = new
 		} else {
 			break

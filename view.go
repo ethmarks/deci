@@ -35,7 +35,7 @@ func (m model) View() tea.View {
 
 	header := getHeader(m.termWidth)
 	statusBar := getStatusBar(m.status, m.termWidth)
-	keybindBar := getKeybindBar(m.termWidth)
+	keybindBar := m.getKeybindBar()
 
 	out := getOutString(
 		grid,

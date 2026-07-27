@@ -6,12 +6,23 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
+type Screen int
+
+const (
+	Editor Screen = iota
+	Help
+)
+
 type model struct {
+	lines       *[]string
+	editorLines []string
+	helpLines   []string
+
 	filename string
-	lines    []string
 
 	status string
 	err    error
+	screen Screen
 
 	showNums bool
 
@@ -31,7 +42,7 @@ type model struct {
 	paneOffsetY int
 }
 
-func initialModel(lines []string, filename string, created bool) model {
+func initialModel(editorLines []string, filename string, created bool) model {
 	status := statusTextWelcome
 
 	if created {
@@ -39,10 +50,14 @@ func initialModel(lines []string, filename string, created bool) model {
 	}
 
 	return model{
+		lines:       &editorLines,
+		editorLines: editorLines,
+		helpLines:   getHelpLines(),
+
 		filename: filename,
-		lines:    lines,
 
 		status: status,
+		screen: Editor,
 
 		showNums: true,
 

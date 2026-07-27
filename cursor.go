@@ -10,11 +10,11 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorX = 0
 		}
 	case "down":
-		if m.cursorY < len(m.lines)-1 {
+		if m.cursorY < len(*m.lines)-1 {
 			m.cursorY += 1
 			m.cursorX = m.getClampedCursorX()
 		} else {
-			m.cursorX = len(m.lines[m.cursorY])
+			m.cursorX = len((*m.lines)[m.cursorY])
 		}
 	case "left":
 		if m.cursorX > 0 {
@@ -22,14 +22,14 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorPrefX = m.cursorX
 		} else if m.cursorY > 0 {
 			m.cursorY -= 1
-			m.cursorPrefX = len(m.lines[m.cursorY])
+			m.cursorPrefX = len((*m.lines)[m.cursorY])
 			m.cursorX = m.cursorPrefX
 		}
 	case "right":
-		if m.cursorX < len(m.lines[m.cursorY]) {
+		if m.cursorX < len((*m.lines)[m.cursorY]) {
 			m.cursorX += 1
 			m.cursorPrefX = m.cursorX
-		} else if m.cursorY < len(m.lines)-1 {
+		} else if m.cursorY < len(*m.lines)-1 {
 			m.cursorY += 1
 			m.cursorX = 0
 			m.cursorPrefX = m.cursorX
@@ -62,7 +62,7 @@ func (m model) updateOffsets() model {
 }
 
 func (m model) getClampedCursorX() int {
-	cursorLine := m.lines[m.cursorY]
+	cursorLine := (*m.lines)[m.cursorY]
 	clampedX := min(m.cursorPrefX, len(cursorLine))
 	return clampedX
 }

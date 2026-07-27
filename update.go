@@ -55,13 +55,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursorX = 0
 			m.cursorPrefX = m.cursorX
 
-			if m.screen == Help {
-				m.screen = Editor
-				m.status = "switched to editor"
-			} else {
+			if m.screen != Help {
 				m.screen = Help
+				m.rawContent = true
+				m.showNums = false
 				m.status = "switched to help"
+			} else {
+				m.screen = Editor
+				m.rawContent = false
+				m.showNums = true
+				m.status = "switched to editor"
 			}
+			m.reservedFromLeft = m.getLeftReserve()
 
 		case "alt+c":
 			m.cursorShape = (m.cursorShape + 2) % 3

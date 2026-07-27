@@ -98,6 +98,8 @@ func getContentString(
 
 		if !rawContent {
 			content = contentStyle.Render(content)
+		} else {
+			numStyle = numStyle.Padding(0)
 		}
 
 		outLines[row] = numStyle.Render(lineNum) + content

@@ -27,8 +27,9 @@ type model struct {
 	showNums bool
 
 	cursorY     int
-	cursorX     int // column of the displayed caret
-	cursorPrefX int // preferred column
+	cursorX     int             // column of the displayed caret
+	cursorPrefX int             // preferred column
+	cursorShape tea.CursorShape // just an iota
 
 	termWidth  int
 	termHeight int

@@ -57,6 +57,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.status = "switched to help"
 			}
 
+		case "alt+c":
+			m.cursorShape = (m.cursorShape + 2) % 3
+			return m, nil
+
 		default:
 			if m.screen == Editor {
 				m = m.handleEditorKeypress(key)

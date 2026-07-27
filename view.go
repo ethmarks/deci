@@ -54,7 +54,7 @@ func (m model) View() tea.View {
 			X: absCursorX,
 			Y: absCursorY,
 		},
-		Shape: tea.CursorBar,
+		Shape: m.cursorShape,
 		Blink: true,
 	}
 

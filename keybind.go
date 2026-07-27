@@ -22,6 +22,10 @@ var keybinds = []keybind{
 		bind: "ctrl+o",
 		text: "Write Out",
 	},
+	keybind{
+		bind: "alt+c",
+		text: "Change Cursor Shape",
+	},
 }
 
 var (

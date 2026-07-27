@@ -24,7 +24,8 @@ type model struct {
 	err    error
 	screen screen
 
-	showNums bool
+	showNums   bool
+	rawContent bool
 
 	cursorY     int
 	cursorX     int             // column of the displayed caret
@@ -60,7 +61,8 @@ func initialModel(editorLines []string, filename string, created bool) model {
 		status: status,
 		screen: Editor,
 
-		showNums: true,
+		showNums:   true,
+		rawContent: false,
 
 		reservedFromTop:    1, // for the header
 		reservedFromBottom: 2, // for the keybinds and status bar

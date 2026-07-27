@@ -7,6 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 )
 
 const (
@@ -19,34 +20,31 @@ func (m model) View() tea.View {
 		return tea.NewView(fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err))
 	}
 
-	linesToDisplay := m.termHeight - m.reservedFromTop - m.reservedFromBottom
-	colsToDisplay := m.termWidth - m.reservedFromLeft - m.reservedFromRight
+	contentRows := m.termHeight - m.reservedFromTop - m.reservedFromBottom
+	contentCols := m.termWidth - m.reservedFromLeft - m.reservedFromRight
 
 	absCursorY := (m.cursorY - m.paneOffsetY) + m.reservedFromTop
 	absCursorX := (m.cursorX - m.paneOffsetX) + m.reservedFromLeft
 
-	if linesToDisplay < 1 || colsToDisplay < 1 {
+	if contentRows < 1 || contentCols < 1 {
 		return tea.NewView("")
 	}
 
-	grid := makeCharGrid(colsToDisplay, linesToDisplay)
+	content := getContentString(
+		*m.lines,
+		contentRows, contentCols,
+		m.paneOffsetY, m.paneOffsetX,
 
-	grid = renderLines(grid, *m.lines, linesToDisplay, colsToDisplay, m.paneOffsetY, m.paneOffsetX)
+		m.cursorY, m.reservedFromLeft,
+
+		m.showNums, m.rawContent,
+	)
 
 	header := getHeader(m.termWidth)
 	statusBar := getStatusBar(m.status, m.termWidth)
 	keybindBar := m.getKeybindBar()
 
-	out := getOutString(
-		grid,
-		m.cursorY,
-		m.paneOffsetY,
-		m.reservedFromLeft,
-		len(*m.lines),
-		m.showNums,
-	)
-
-	v := tea.NewView(header + "\n" + out + "\n" + statusBar + "\n" + keybindBar)
+	v := tea.NewView(header + "\n" + content + "\n" + statusBar + "\n" + keybindBar)
 
 	// cursor
 	v.Cursor = &tea.Cursor{
@@ -63,77 +61,47 @@ func (m model) View() tea.View {
 	return v
 }
 
-func makeCharGrid(width, height int) [][]string {
-	grid := make([][]string, height)
+func getContentString(
+	fullLines []string,
+	contentRows, contentCols,
+	paneOffsetY, paneOffsetX int,
 
-	for y, _ := range grid {
-		row := make([]string, width)
-		for x, _ := range row {
-			row[x] = " "
-		}
-		grid[y] = row
-	}
+	cursorY, reservedFromLeft int,
 
-	return grid
-}
-
-func getOutString(
-	grid [][]string,
-	cursorY, paneOffsetY, reservedFromLeft, lineCount int,
-	showNums bool,
+	showNums, rawContent bool,
 ) string {
-	outLines := make([]string, len(grid))
+	outLines := make([]string, contentRows)
 
-	for gridY, chars := range grid {
-		absY := gridY + paneOffsetY
-		line := strings.Join(chars, "")
+	for row := range outLines {
+		absY := row + paneOffsetY
 
-		lineStyle := baseStyle
+		contentStyle := baseStyle.Width(contentCols)
 		numStyle := lineNumStyle.Width(reservedFromLeft)
 
 		if cursorY == absY {
-			lineStyle = cursorLineStyle
-			numStyle = numStyle.Foreground(lipgloss.White)
+			contentStyle = contentStyle.
+				Background(cursorLineBackground)
+			numStyle = numStyle.
+				Background(cursorLineBackground).
+				Foreground(lipgloss.White)
 		}
 
-		numStyle = numStyle.Inherit(lineStyle)
-
-		lineNum := ""
-		if showNums && absY < lineCount {
+		var lineNum string
+		if showNums && absY < len(fullLines) {
 			lineNum = strconv.Itoa(absY + 1)
-			lineNum = numStyle.Render(lineNum)
 		}
 
-		outLines[gridY] = lineNum + lineStyle.Render(line)
+		var content string
+		if absY < len(fullLines) {
+			content = ansi.Cut(fullLines[absY], paneOffsetX, contentCols+paneOffsetX)
+		}
+
+		if !rawContent {
+			content = contentStyle.Render(content)
+		}
+
+		outLines[row] = numStyle.Render(lineNum) + content
 	}
 
 	return strings.Join(outLines, "\n")
-}
-
-func renderLines(
-	grid [][]string,
-	lines []string,
-	linesToDisplay, colsToDisplay, paneOffsetY, paneOffsetX int,
-) [][]string {
-	for gridY := range linesToDisplay {
-		absY := gridY + paneOffsetY
-
-		if absY >= len(lines) {
-			break
-		}
-
-		line := lines[absY]
-
-		for gridX := range colsToDisplay {
-			absX := gridX + paneOffsetX
-
-			if absX >= len(line) {
-				break
-			}
-
-			grid[gridY][gridX] = string(line[absX])
-		}
-	}
-
-	return grid
 }

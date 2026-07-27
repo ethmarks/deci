@@ -34,8 +34,8 @@ func (m model) View() tea.View {
 	grid = renderLines(grid, *m.lines, linesToDisplay, colsToDisplay, m.paneOffsetY, m.paneOffsetX)
 
 	header := getHeader(m.termWidth)
-
 	statusBar := getStatusBar(m.status, m.termWidth)
+	keybindBar := getKeybindBar(m.termWidth)
 
 	out := getOutString(
 		grid,
@@ -46,7 +46,7 @@ func (m model) View() tea.View {
 		m.showNums,
 	)
 
-	v := tea.NewView(header + "\n" + out + "\n" + statusBar)
+	v := tea.NewView(header + "\n" + out + "\n" + statusBar + "\n" + keybindBar)
 
 	// cursor
 	v.Cursor = &tea.Cursor{

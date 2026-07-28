@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"math"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type errMsg struct{ err error }
@@ -29,6 +32,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.termHeight = msg.Height
 		m.reservedFromLeft = m.getLeftReserve()
 		m = m.updateOffsets()
+
+	case tea.PasteMsg:
+		if m.screen == Editor {
+			for _, key := range msg.Content {
+				m = m.handleEditorKeypress(string(key))
+			}
+
+			fits := lipgloss.Width(msg.Content) <= m.termWidth/2 && strings.Contains(msg.Content, "\n")
+
+			if fits {
+				m.status = fmt.Sprintf("pasted '%v'", msg.Content)
+			} else {
+				m.status = fmt.Sprintf("pasted %v characters", lipgloss.Width(msg.Content))
+			}
+
+			m = m.updateOffsets()
+		} else {
+			m.status = "this screen is read-only"
+		}
 
 	case tea.KeyPressMsg:
 		switch key := msg.String(); key {

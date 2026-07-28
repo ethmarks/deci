@@ -20,7 +20,7 @@ func (m model) handleEditorKeypress(key string) model {
 	case "delete":
 		return m.handleDelete()
 
-	case "enter":
+	case "enter", "\n":
 		return m.handleEnter()
 
 	case "space":

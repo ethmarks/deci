@@ -43,6 +43,8 @@ type model struct {
 
 	paneOffsetX int
 	paneOffsetY int
+
+	previewStyle glamourStyle
 }
 
 func initialModel(editorLines []string, filename string, created bool) model {

@@ -114,6 +114,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.reservedFromLeft = m.getLeftReserve()
 
+		case "alt+p":
+			m.previewStyle = (m.previewStyle + 1) % 7
+
+			m.status = fmt.Sprintf("changed preview style to %v", m.previewStyle.String())
+
 		default:
 			if m.screen == Editor {
 				m = m.handleEditorKeypress(key)
@@ -131,7 +136,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case Help:
 		m.lines = &m.helpLines
 	case Preview:
-		md, err := previewMd(*m.lines)
+		md, err := previewMd(m.editorLines, m.previewStyle)
 
 		if err != nil {
 			m.err = err

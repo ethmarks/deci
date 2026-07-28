@@ -35,6 +35,11 @@ var keybinds = []keybind{
 		bind: "alt+c",
 		text: "Change Cursor Shape",
 	},
+	keybind{
+		bind:      "alt+p",
+		text:      "Change Preview Style",
+		condition: func(m model) bool { return m.screen == Preview },
+	},
 }
 
 var (

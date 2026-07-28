@@ -1,6 +1,7 @@
 package main
 
 import (
+	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 )
 
@@ -70,4 +71,17 @@ func (m model) updateOffsets() model {
 func (m model) getClampedCursorX() int {
 	clampedX := min(m.cursorPrefX, lipgloss.Width((*m.lines)[m.cursorY]))
 	return clampedX
+}
+
+func cursorShapeToString(shape tea.CursorShape) string {
+	switch shape {
+	case 0:
+		return "block"
+	case 1:
+		return "underline"
+	case 2:
+		return "bar"
+	default:
+		return "block"
+	}
 }

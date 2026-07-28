@@ -92,6 +92,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "alt+c":
 			m.cursorShape = (m.cursorShape + 2) % 3
+
+			m.status = fmt.Sprintf("changed cursor shape to %v", cursorShapeToString(m.cursorShape))
 			return m, nil
 
 		case "ctrl+p":

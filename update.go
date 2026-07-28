@@ -84,8 +84,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.screen != Help {
 				m.screen = Help
+				m.status = "switched to help"
 			} else {
 				m.screen = Editor
+				m.status = "switched to editor"
 			}
 
 		case "alt+c":
@@ -101,8 +103,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.screen != Preview {
 				m.screen = Preview
+				m.status = "previewing as markdown"
 			} else {
 				m.screen = Editor
+				m.status = "switched to editor"
 			}
 			m.reservedFromLeft = m.getLeftReserve()
 
@@ -129,14 +133,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.rawContent = false
 		m.showNums = true
 		m.pagerMode = false
-		m.status = "switched to editor"
 	case Help:
 		m.lines = &m.helpLines
 
 		m.rawContent = true
 		m.showNums = false
 		m.pagerMode = true
-		m.status = "switched to help"
 	case Preview:
 		md, err := previewMd(m.editorLines, m.previewStyle)
 
@@ -149,7 +151,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.rawContent = true
 		m.showNums = false
 		m.pagerMode = true
-		m.status = "previewing as markdown"
 	}
 
 	m.reservedFromLeft = m.getLeftReserve()

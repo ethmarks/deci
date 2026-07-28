@@ -32,6 +32,16 @@ var keybinds = []keybind{
 		},
 	},
 	keybind{
+		bind:      "ctrl+z",
+		text:      "Undo",
+		condition: func(m model) bool { return m.screen == Editor },
+	},
+	keybind{
+		bind:      "ctrl+y",
+		text:      "Redo",
+		condition: func(m model) bool { return m.screen == Editor },
+	},
+	keybind{
 		bind:      "alt+c",
 		text:      "Change Cursor Shape",
 		condition: func(m model) bool { return !m.pagerMode },

@@ -47,7 +47,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.status = fmt.Sprintf("pasted %v characters", lipgloss.Width(msg.Content))
 			}
 
-			m = m.updateOffsets()
+			m = m.updateOffsets().saveSnapshot()
 		} else {
 			m.status = "this screen is read-only"
 		}
@@ -71,8 +71,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.pagerMode {
 				m = m.handlePager(key)
 			} else {
-				m = m.handleCursorMove(key)
-				m = m.updateOffsets()
+				m = m.handleCursorMove(key).updateOffsets()
 			}
 
 			return m, nil
@@ -115,11 +114,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			m.status = fmt.Sprintf("changed preview style to %v", m.previewStyle.String())
 
+		case "ctrl+z":
+			if m.screen == Editor {
+				m = m.undo()
+			}
+
+		case "ctrl+y":
+			if m.screen == Editor {
+				m = m.redo()
+			}
+
 		default:
 			if m.screen == Editor {
-				m = m.handleEditorKeypress(key)
-
-				m = m.updateOffsets()
+				m = m.handleEditorKeypress(key).saveSnapshot().updateOffsets()
 			} else {
 				m.status = "this screen is read-only"
 			}

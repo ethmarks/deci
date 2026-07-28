@@ -46,6 +46,9 @@ type model struct {
 	paneOffsetY int
 
 	previewStyle glamourStyle
+
+	history      []historyState
+	historyIndex int
 }
 
 func initialModel(editorLines []string, filename string, created bool) model {
@@ -55,7 +58,7 @@ func initialModel(editorLines []string, filename string, created bool) model {
 		status = fmt.Sprintf("Created %v", filename)
 	}
 
-	return model{
+	m := model{
 		lines:       &editorLines,
 		editorLines: editorLines,
 		helpLines:   getHelpLines(),
@@ -74,6 +77,10 @@ func initialModel(editorLines []string, filename string, created bool) model {
 		reservedFromLeft:   0, // for the line nums
 		reservedFromRight:  0, // unused
 	}
+
+	m = m.saveSnapshot()
+
+	return m
 }
 
 func (m model) Init() tea.Cmd {

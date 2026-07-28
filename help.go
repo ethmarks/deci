@@ -1,8 +1,10 @@
 package main
 
 import (
-	"charm.land/lipgloss/v2"
+	"strconv"
 	"strings"
+
+	"charm.land/lipgloss/v2"
 )
 
 type hyperlink struct {
@@ -10,18 +12,41 @@ type hyperlink struct {
 	url  string
 }
 
-var (
-	// https://patorjk.com/software/taag/#p=display&f=Colossal&t=deci&x=none&v=4&h=4&w=80&we=false
-	artText = `
-       888                   d8b
-       888                   Y8P
-       888
-   .d88888  .d88b.   .d8888b 888
-  d88" 888 d8P  Y8b d88P"    888
-  888  888 88888888 888      888
-  Y88b 888 Y8b.     Y88b.    888
-   "Y88888  "Y8888   "Y8888P 888`
+const (
+	dAscii = `
+     888
+     888
+     888
+ .d88888
+d88" 888
+888  888
+Y88b 888
+ "Y88888`
 
+	eAscii = `
+ .d88b.
+d8P  Y8b
+88888888
+Y8b.
+ "Y8888`
+	cAscii = `
+ .d8888b
+d88P"
+888
+Y88b.
+ "Y8888P`
+	iAscii = `
+d8b
+Y8P
+
+888
+888
+888
+888
+888`
+)
+
+var (
 	subtitleText = `"your second-to-last next editor"`
 
 	bodyText = `
@@ -41,6 +66,17 @@ deci is a text editor like nano.
 )
 
 func getHelpLines() []string {
+	asciiLetters := []string{dAscii, eAscii, cAscii, iAscii}
+
+	for i, letter := range asciiLetters {
+		asciiLetters[i] = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(strconv.Itoa(i + 3))).
+			PaddingLeft(1).
+			Render(letter)
+	}
+
+	artText := lipgloss.JoinHorizontal(lipgloss.Bottom, asciiLetters...)
+
 	art := lipgloss.NewStyle().Foreground(lipgloss.Cyan).Render(artText)
 
 	subtitle := lipgloss.NewStyle().

@@ -68,7 +68,6 @@ func (m model) updateOffsets() model {
 }
 
 func (m model) getClampedCursorX() int {
-	cursorLine := (*m.lines)[m.cursorY]
-	clampedX := min(m.cursorPrefX, len(cursorLine))
+	clampedX := min(m.cursorPrefX, lipgloss.Width((*m.lines)[m.cursorY]))
 	return clampedX
 }

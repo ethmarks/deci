@@ -32,8 +32,9 @@ var keybinds = []keybind{
 		},
 	},
 	keybind{
-		bind: "alt+c",
-		text: "Change Cursor Shape",
+		bind:      "alt+c",
+		text:      "Change Cursor Shape",
+		condition: func(m model) bool { return !m.pagerMode },
 	},
 	keybind{
 		bind:      "alt+p",

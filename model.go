@@ -11,6 +11,7 @@ type screen int
 const (
 	Editor screen = iota
 	Help
+	Preview
 )
 
 type model struct {

@@ -25,6 +25,13 @@ var keybinds = []keybind{
 		condition: func(m model) bool { return m.screen == Editor },
 	},
 	keybind{
+		bind: "ctrl+p",
+		text: "Toggle Preview",
+		condition: func(m model) bool {
+			return m.screen == Editor || m.screen == Preview
+		},
+	},
+	keybind{
 		bind: "alt+c",
 		text: "Change Cursor Shape",
 	},

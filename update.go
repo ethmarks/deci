@@ -94,6 +94,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursorShape = (m.cursorShape + 2) % 3
 			return m, nil
 
+		case "ctrl+p":
+			m.cursorY = 0
+			m.cursorX = 0
+			m.cursorPrefX = m.cursorX
+
+			if m.screen != Preview {
+				m.screen = Preview
+				m.rawContent = true
+				m.showNums = false
+				m.status = "previewing as markdown"
+			} else {
+				m.screen = Editor
+				m.rawContent = false
+				m.showNums = true
+				m.status = "switched to editor"
+			}
+			m.reservedFromLeft = m.getLeftReserve()
+
 		default:
 			if m.screen == Editor {
 				m = m.handleEditorKeypress(key)
@@ -110,6 +128,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.lines = &m.editorLines
 	case Help:
 		m.lines = &m.helpLines
+	case Preview:
+		md, err := previewMd(*m.lines)
+
+		if err != nil {
+			m.err = err
+			return m, nil
+		}
+
+		m.lines = &md
+
+		return m, nil
 	}
 
 	// Return the updated model to the Bubble Tea runtime for processing.

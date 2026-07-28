@@ -12,9 +12,19 @@ type historyState struct {
 	cursorPrefX int
 }
 
+const (
+	maxHistory = 100
+)
+
 func (m model) saveSnapshot() model {
+	// drop redos
 	if m.historyIndex < len(m.history)-1 {
 		m.history = m.history[:m.historyIndex+1]
+	}
+
+	if len(m.history) > maxHistory {
+		m.history = m.history[1:]
+		m.historyIndex--
 	}
 
 	snapshot := historyState{
@@ -33,6 +43,7 @@ func (m model) saveSnapshot() model {
 
 func (m model) undo() model {
 	if m.historyIndex <= 0 {
+		m.status = "reached end of undo buffer"
 		return m
 	}
 

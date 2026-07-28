@@ -45,6 +45,27 @@ func (m model) handleCursorMove(key string) model {
 	return m
 }
 
+func (m model) handlePager(key string) model {
+	switch key {
+	case "up":
+		if m.paneOffsetY > 0 {
+			m.paneOffsetY -= 1
+		}
+		if m.status == "reached end of file" {
+			m.status = ""
+		}
+	case "down":
+		linesHeight := len(*m.lines) - 1
+
+		if m.paneOffsetY < linesHeight-1 {
+			m.paneOffsetY += 1
+		} else {
+			m.status = "reached end of file"
+		}
+	}
+	return m
+}
+
 func (m model) updateOffsets() model {
 	contentRows := m.termHeight - m.reservedFromTop - m.reservedFromBottom
 	contentCols := m.termWidth - m.reservedFromLeft - m.reservedFromRight

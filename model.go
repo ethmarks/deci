@@ -27,6 +27,7 @@ type model struct {
 
 	showNums   bool
 	rawContent bool
+	pagerMode  bool
 
 	cursorY     int
 	cursorX     int             // column of the displayed caret
@@ -66,6 +67,7 @@ func initialModel(editorLines []string, filename string, created bool) model {
 
 		showNums:   true,
 		rawContent: false,
+		pagerMode:  false,
 
 		reservedFromTop:    1, // for the header
 		reservedFromBottom: 2, // for the keybinds and status bar

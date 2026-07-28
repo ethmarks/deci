@@ -37,7 +37,7 @@ func (m model) View() tea.View {
 
 		m.cursorY, m.reservedFromLeft,
 
-		m.showNums, m.rawContent,
+		m.showNums, m.rawContent, m.pagerMode,
 	)
 
 	header := getHeader(m.termWidth)
@@ -47,13 +47,15 @@ func (m model) View() tea.View {
 	v := tea.NewView(header + "\n" + content + "\n" + statusBar + "\n" + keybindBar)
 
 	// cursor
-	v.Cursor = &tea.Cursor{
-		Position: tea.Position{
-			X: absCursorX,
-			Y: absCursorY,
-		},
-		Shape: m.cursorShape,
-		Blink: true,
+	if !m.pagerMode {
+		v.Cursor = &tea.Cursor{
+			Position: tea.Position{
+				X: absCursorX,
+				Y: absCursorY,
+			},
+			Shape: m.cursorShape,
+			Blink: true,
+		}
 	}
 
 	v.AltScreen = true
@@ -68,7 +70,7 @@ func getContentString(
 
 	cursorY, reservedFromLeft int,
 
-	showNums, rawContent bool,
+	showNums, rawContent, pagerMode bool,
 ) string {
 	outLines := make([]string, contentRows)
 
@@ -78,7 +80,7 @@ func getContentString(
 		contentStyle := baseStyle.Width(contentCols)
 		numStyle := lineNumStyle.Width(reservedFromLeft)
 
-		if cursorY == absY {
+		if cursorY == absY && !pagerMode {
 			contentStyle = contentStyle.
 				Background(cursorLineBackground)
 			numStyle = numStyle.

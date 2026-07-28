@@ -68,8 +68,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "up", "down", "left", "right":
-			m = m.handleCursorMove(key)
-			m = m.updateOffsets()
+			if m.pagerMode {
+				m = m.handlePager(key)
+			} else {
+				m = m.handleCursorMove(key)
+				m = m.updateOffsets()
+			}
+
 			return m, nil
 
 		case "ctrl+h":
@@ -79,16 +84,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.screen != Help {
 				m.screen = Help
-				m.rawContent = true
-				m.showNums = false
-				m.status = "switched to help"
 			} else {
 				m.screen = Editor
-				m.rawContent = false
-				m.showNums = true
-				m.status = "switched to editor"
 			}
-			m.reservedFromLeft = m.getLeftReserve()
 
 		case "alt+c":
 			m.cursorShape = (m.cursorShape + 2) % 3
@@ -103,14 +101,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			if m.screen != Preview {
 				m.screen = Preview
-				m.rawContent = true
-				m.showNums = false
-				m.status = "previewing as markdown"
 			} else {
 				m.screen = Editor
-				m.rawContent = false
-				m.showNums = true
-				m.status = "switched to editor"
 			}
 			m.reservedFromLeft = m.getLeftReserve()
 
@@ -133,8 +125,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch m.screen {
 	case Editor:
 		m.lines = &m.editorLines
+
+		m.rawContent = false
+		m.showNums = true
+		m.pagerMode = false
+		m.status = "switched to editor"
 	case Help:
 		m.lines = &m.helpLines
+
+		m.rawContent = true
+		m.showNums = false
+		m.pagerMode = true
+		m.status = "switched to help"
 	case Preview:
 		md, err := previewMd(m.editorLines, m.previewStyle)
 
@@ -144,9 +146,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		m.lines = &md
-
-		return m, nil
+		m.rawContent = true
+		m.showNums = false
+		m.pagerMode = true
+		m.status = "previewing as markdown"
 	}
+
+	m.reservedFromLeft = m.getLeftReserve()
 
 	// Return the updated model to the Bubble Tea runtime for processing.
 	// Note that we're not returning a command.

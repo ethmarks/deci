@@ -17,6 +17,10 @@ var (
 )
 
 func getStatusBar(status string, termWidth int) string {
+	if status == "" {
+		return ""
+	}
+
 	if lipgloss.Width(status) >= termWidth {
 		return status
 	}

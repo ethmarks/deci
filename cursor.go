@@ -1,8 +1,11 @@
 package main
 
 import (
+	"unicode"
+
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 )
 
 func (m model) handleCursorMove(key string) model {
@@ -42,6 +45,40 @@ func (m model) handleCursorMove(key string) model {
 			m.cursorPrefX = m.cursorX
 		}
 	}
+	return m
+}
+
+func (m model) handleCtrlCursorMove(key string) model {
+	line := []rune((*m.lines)[m.cursorY])
+	lineLen := ansi.StringWidth((*m.lines)[m.cursorY])
+
+	switch key {
+	case "ctrl+left":
+		if m.cursorX == 0 {
+			return m.handleCursorMove("left")
+		}
+
+		for m.cursorX > 0 && isDelimiter(line[m.cursorX-1]) {
+			m = m.handleCursorMove("left")
+		}
+
+		for m.cursorX > 0 && !isDelimiter(line[m.cursorX-1]) {
+			m = m.handleCursorMove("left")
+		}
+	case "ctrl+right":
+		if m.cursorX >= lineLen {
+			return m.handleCursorMove("right")
+		}
+
+		for m.cursorX < lineLen && !isDelimiter(line[m.cursorX]) {
+			m = m.handleCursorMove("right")
+		}
+
+		for m.cursorX < lineLen && isDelimiter(line[m.cursorX]) {
+			m = m.handleCursorMove("right")
+		}
+	}
+
 	return m
 }
 
@@ -105,4 +142,8 @@ func cursorShapeToString(shape tea.CursorShape) string {
 	default:
 		return "block"
 	}
+}
+
+func isDelimiter(r rune) bool {
+	return unicode.IsSpace(r) || unicode.IsPunct(r) || unicode.IsSymbol(r)
 }

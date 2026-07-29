@@ -76,6 +76,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			return m, nil
 
+		case "ctrl+left", "ctrl+right":
+			if !m.pagerMode {
+				m = m.handleCtrlCursorMove(key).updateOffsets()
+			}
+
 		case "ctrl+h":
 			m.cursorY = 0
 			m.cursorX = 0

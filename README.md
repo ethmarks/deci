@@ -54,8 +54,15 @@ how [Nano](https://en.wikipedia.org/wiki/Neci-) is the prefix for 10^-9.
 | pretty small   | _tiny_           |
 | not well known | extremely common |
 
-Written in [Go](https://go.dev/) with
-[Bubble Tea](https://github.com/charmbracelet/bubbletea).
+## Acknowledgements
+
+- Thanks to the Charm team for making: 
+	- [Bubble Tea](https://github.com/charmbracelet/bubbletea), which I used as the TUI framework 
+	- [Lipgloss](github.com/charmbracelet/lipgloss), which I used to style text
+	- [Glamour](github.com/charmbracelet/glamour), which I used for the Markdown preview.
+- Thanks to [Jonathon](https://github.com/Jonathon) for making the [Colossal](www.figlet.org/cgi-bin/fontdb_example.cgi?font=colossal.flf) font, which I used for the ASCII art in the help screen.
+- Thanks to [Hunter WB](https://github.com/hunterwb) for making [AnyASCII](github.com/anyascii/anyascii), which I used to sanitize the file inputs.
+- Thanks to the Go team for making the [Go Tour](https://go.dev/tour/) and to [Sonia Keys](https://github.com/soniakeys) for writing [Learn Go in Y Minutes](https://learnxinyminutes.com/go), both of which are super helpful resources that I used to learn Go for this project.
 
 ## License
 

@@ -61,11 +61,11 @@ var (
 	linkText = "links:"
 
 	hyperlinks = []hyperlink{
-		hyperlink{
+		{
 			text: "source",
 			url:  "https://github.com/ethmarks/deci/",
 		},
-		hyperlink{
+		{
 			text: "site",
 			url:  "https://ethmarks.github.io/deci/",
 		},

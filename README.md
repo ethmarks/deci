@@ -6,12 +6,6 @@
 
 > **I recommend downloading the latest binary from the [releases page](https://github.com/ethmarks/deci/releases).**
 
-You can also build from source (make sure to [install Go](https://go.dev/doc/install)):
-
-```sh
-go install github.com/ethmarks/deci@latest
-```
-
 ## Keybinds
 
 `deci` has unique behavior for 112 keybinds in total.
@@ -43,6 +37,14 @@ Special keybinds:
 - `ctrl+p`: toggles the Markdown preview screen
 - `alt+p`: changes the Markdown preview theme
 - `alt+c`: changes the cursor shape
+
+## Building from Source
+
+(requires Go 1.21+)
+
+```sh
+go install github.com/ethmarks/deci@latest
+```
 
 ## Etymology
 

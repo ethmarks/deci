@@ -5,6 +5,6 @@ const site = lume({
 	location: new URL("https://ethmarks.github.io/deci/"),
 });
 
-site.use(theme());
+site.use(theme({ favicon: { input: "uploads/icon.png" } }));
 
 export default site;

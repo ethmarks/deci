@@ -2,6 +2,8 @@
 
 `deci` is a terminal text editor like `nano`.
 
+![](./web/uploads/screenshot_0.4.1.png)
+
 ## Quickstart
 
 > [!TIP]

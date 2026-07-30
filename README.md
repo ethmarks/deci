@@ -4,8 +4,19 @@
 
 ## Quickstart
 
-> **I recommend downloading the latest binary from the
+> [!TIP]
+> **Download the pre-built binary for your platform from the
 > [releases page](https://github.com/ethmarks/deci/releases).**
+
+## Features
+
+- Integrated Markdown previewing with
+  [Glamour](https://github.com/charmbracelet/glamour)
+- Undo/redo buffer
+- Cursor movement modeled on Zed and VS Code
+- TUI components styled with
+  [Lipgloss](https://github.com/charmbracelet/lipgloss)
+- Customizable cursor shape and preview theme
 
 ## Keybinds
 
@@ -33,6 +44,10 @@ implement:
 
 Cursor movement keybinds, which every editor supports, but were so complicated
 that they get their own category:
+
+_I modeled these behaviors by observing how the IDE that I use (Zed) handles
+cursor movement. I've also done some testing in VS Code, and it behaves the same
+as far as I can tell._
 
 - `up`: if the cursor is _not_ on the first line, moves the cursor up one line
   and either to the end of the current line or the last x position, whichever is

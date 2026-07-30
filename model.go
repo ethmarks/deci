@@ -86,3 +86,13 @@ func initialModel(editorLines []string, filename string, created bool) model {
 func (m model) Init() tea.Cmd {
 	return nil
 }
+
+func (m model) resetViewport() model {
+	m.paneOffsetY = 0
+	m.paneOffsetX = 0
+	m.cursorY = 0
+	m.cursorX = 0
+	m.cursorPrefX = m.cursorX
+
+	return m
+}

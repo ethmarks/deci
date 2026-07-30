@@ -82,9 +82,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "ctrl+h":
-			m.cursorY = 0
-			m.cursorX = 0
-			m.cursorPrefX = m.cursorX
+			m = m.resetViewport()
 
 			if m.screen != Help {
 				m.screen = Help
@@ -101,9 +99,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 
 		case "ctrl+p":
-			m.cursorY = 0
-			m.cursorX = 0
-			m.cursorPrefX = m.cursorX
+			m = m.resetViewport()
 
 			if m.screen != Preview {
 				m.screen = Preview

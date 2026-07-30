@@ -10,17 +10,19 @@ blogList:
   showDate: true
   showMins: false
 ---
+
 # Deci
 
 Your second-to-last next editor {.subtitle}
 
 Deci is a terminal text editor like [nano](https://nano-editor.org/).
 
-![](/uploads/screenshot_0.3.0.png)
+![](/uploads/screenshot_0.4.1.png)
 
 ## Installation
 
-The easiest way to install deci is to download a [pre-built binary](https://github.com/ethmarks/deci/releases).
+The easiest way to install deci is to download a
+[pre-built binary](https://github.com/ethmarks/deci/releases).
 
 You can also build from source (requires [Go](https://go.dev/dl/)):
 
@@ -32,7 +34,8 @@ go build
 
 ## Usage
 
-Just run `deci` followed by the name of the file you want to edit. If it doesn't exist, deci will create it.
+Just run `deci` followed by the name of the file you want to edit. If it doesn't
+exist, deci will create it.
 
 ```sh
 deci myfile.txt

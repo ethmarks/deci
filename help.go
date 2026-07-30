@@ -49,9 +49,16 @@ Y8P
 var (
 	subtitleText = `"your second-to-last next editor"`
 
-	descText = `
-deci is a terminal text editor (like nano).
-`
+	descText = "deci is a terminal text editor (like nano)."
+
+	separator = lipgloss.NewStyle().
+			SetString(strings.Repeat("─", 40)). // from lipgloss.RoundedBorder()
+			Foreground(lipgloss.Color("240")).
+			Bold(true).
+			Padding(1, 0).
+			String()
+
+	linkText = "links:"
 
 	hyperlinks = []hyperlink{
 		hyperlink{
@@ -63,6 +70,20 @@ deci is a terminal text editor (like nano).
 			url:  "https://ethmarks.github.io/deci/",
 		},
 	}
+
+	bodyText = `
+special keybinds:
+
+ctrl+h: toggles this help screen.
+ctrl+c: exits deci and returns to the shell.
+ctrl+o: writes editor content out to the file.
+ctrl+p: toggles the preview screen. It works best with Markdown content, but if
+        you try to preview a Go file or something, it won't crash.
+alt+c:  changes the cursor shape. The default is a solid block, but you can
+        change it to vertical bar or an underline if you want.
+alt+p:  changes the preview style. The styles, in order, are: dracula, dark,
+        ascii, tokyo-night, light, notty, and pink.
+`
 )
 
 func getHelpLines() []string {
@@ -77,7 +98,9 @@ func getHelpLines() []string {
 
 	artText := lipgloss.JoinHorizontal(lipgloss.Bottom, asciiLetters...)
 
-	art := lipgloss.NewStyle().Foreground(lipgloss.Cyan).Render(artText)
+	art := lipgloss.NewStyle().
+		Foreground(lipgloss.Cyan).
+		Render(artText)
 
 	subtitle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
@@ -100,7 +123,11 @@ func getHelpLines() []string {
 		links.WriteString("\n")
 	}
 
-	s := art + "\n\n" + subtitle + "\n" + descText + "\n" + links.String()
+	s := art + "\n\n" +
+		subtitle + "\n\n" +
+		descText + "\n" + separator + "\n" +
+		linkText + "\n\n" + links.String() + separator +
+		bodyText + separator
 
 	return strings.Split(s, "\n")[1:]
 }

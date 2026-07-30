@@ -49,8 +49,8 @@ Y8P
 var (
 	subtitleText = `"your second-to-last next editor"`
 
-	bodyText = `
-deci is a text editor like nano.
+	descText = `
+deci is a terminal text editor (like nano).
 `
 
 	hyperlinks = []hyperlink{
@@ -84,7 +84,7 @@ func getHelpLines() []string {
 		Foreground(lipgloss.Blue).
 		Render(subtitleText)
 
-	var links string
+	var links strings.Builder
 	for _, link := range hyperlinks {
 		text := lipgloss.NewStyle().
 			Render(link.text)
@@ -93,10 +93,14 @@ func getHelpLines() []string {
 			Foreground(lipgloss.Green).
 			Hyperlink(link.url).
 			Render(link.url)
-		links += text + ": " + url + "\n"
+
+		links.WriteString(text)
+		links.WriteString(": ")
+		links.WriteString(url)
+		links.WriteString("\n")
 	}
 
-	s := art + "\n\n" + subtitle + "\n" + bodyText + "\n" + links
+	s := art + "\n\n" + subtitle + "\n" + descText + "\n" + links.String()
 
 	return strings.Split(s, "\n")[1:]
 }

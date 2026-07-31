@@ -175,7 +175,9 @@ messages):
 (requires Go 1.21+)
 
 ```sh
-go install github.com/ethmarks/deci@latest
+git clone https://github.com/ethmarks/deci.git
+cd deci
+go build .
 ```
 
 ## Etymology

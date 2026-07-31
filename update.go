@@ -142,7 +142,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.showNums = true
 		m.pagerMode = false
 	case Help:
-		m.lines = &m.helpLines
+		m.lines = &helpLines
 
 		m.rawContent = true
 		m.showNums = false

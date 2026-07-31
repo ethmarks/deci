@@ -131,3 +131,5 @@ func getHelpLines() []string {
 
 	return strings.Split(s, "\n")[1:]
 }
+
+var helpLines = getHelpLines()

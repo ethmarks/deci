@@ -15,7 +15,6 @@ const (
 type model struct {
 	lines       *[]string
 	editorLines []string
-	helpLines   []string
 
 	filename string
 
@@ -53,7 +52,6 @@ func initialModel(editorLines []string, filename string) model {
 	m := model{
 		lines:       &editorLines,
 		editorLines: editorLines,
-		helpLines:   getHelpLines(),
 
 		filename: filename,
 

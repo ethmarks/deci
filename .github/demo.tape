@@ -55,8 +55,6 @@ Sleep 800ms
 Down 6
 Sleep 300ms
 Enter 2
-Sleep 300ms
-Type "1. "
 Sleep 200ms
 Type "here's what this looks in the preview"
 Sleep 500ms

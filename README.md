@@ -6,9 +6,28 @@
 
 ## Quickstart
 
-> [!TIP]
-> **Download the pre-built binary for your platform from the
-> [releases page](https://github.com/ethmarks/deci/releases).**
+**Install `deci` by downloading the pre-built binary for your platform from the
+[releases page](https://github.com/ethmarks/deci/releases).** If you have Go
+installed, you can also [build from source](#building-from-source) using this
+command:
+
+```sh
+go install github.com/ethmarks/deci@latest
+```
+
+Once you have `deci` installed, you can run it in your terminal using the `deci`
+command followed by the filepath you want to edit (if it doesn't exist, `deci`
+will create it when you save). You can also run `deci` without a filepath if you
+want, and it'll default to `deci_out.txt`.
+
+```sh
+deci myfile.txt
+```
+
+Once you have `deci` opened, you can just edit your file like in a normal text
+editor. A list of available keybinds is displayed at the bottom of the screen,
+and you can press `ctrl+h` to open the help screen. Press `ctrl+o` to save your
+file.
 
 ## Features
 

@@ -1,6 +1,9 @@
 # deci
 
-`deci` is a terminal text editor like `nano`.
+`deci` is a terminal text editor like `nano`. My first project in
+[Go](https://go.dev) using
+[Bubble Tea](https://github.com/charmbracelet/bubbletea) and the
+[Charm ecosystem](https://github.com/charmbracelet).
 
 ![](./web/uploads/screenshot_0.4.1.png)
 

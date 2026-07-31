@@ -19,9 +19,9 @@ go install github.com/ethmarks/deci@latest
 ```
 
 Once you have `deci` installed, you can run it in your terminal using the `deci`
-command followed by the filepath you want to edit (if it doesn't exist, `deci`
-will create it when you save). You can also run `deci` without a filepath if you
-want, and it'll default to `deci_out.txt`.
+command followed by the filepath you want to edit. You can also run `deci`
+without a filepath if you want, and it'll default to `deci_out.txt`. If the
+filepath doesn't exist, `deci` will create it once you save.
 
 ```sh
 deci myfile.txt
@@ -107,7 +107,7 @@ Special keybinds:
 ## How it Works
 
 `deci` uses the [Bubble Tea](https://github.com/charmbracelet/bubbletea)
-framework, so it adopts inherits
+framework, so it inherits
 [The Elm Architecture](https://guide.elm-lang.org/architecture/), which means
 that the code is split into three distinct sections:
 
@@ -200,8 +200,8 @@ how [Nano](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
   - [Glamour](https://github.com/charmbracelet/glamour), which I used for the
     Markdown preview.
 - Thanks to [Jonathon](https://github.com/Jonathon) for making the
-  [Colossal](www.figlet.org/cgi-bin/fontdb_example.cgi?font=colossal.flf) font,
-  which I used for the ASCII art in the help screen.
+  [Colossal](https://www.figlet.org/cgi-bin/fontdb_example.cgi?font=colossal.flf)
+  font, which I used for the ASCII art in the help screen.
 - Thanks to [Hunter WB](https://github.com/hunterwb) for making
   [AnyASCII](https://github.com/anyascii/anyascii), which I used to sanitize the
   file inputs.

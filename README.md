@@ -181,7 +181,7 @@ go install github.com/ethmarks/deci@latest
 ## Etymology
 
 [Deci](https://en.wikipedia.org/wiki/Deci-) is the Metric prefix for 10^-1, like
-how [Nano](https://en.wikipedia.org/wiki/Neci-) is the prefix for 10^-9.
+how [Nano](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
 
 | deci           | nano             |
 | -------------- | ---------------- |
@@ -193,15 +193,16 @@ how [Nano](https://en.wikipedia.org/wiki/Neci-) is the prefix for 10^-9.
 - Thanks to the Charm team for making:
   - [Bubble Tea](https://github.com/charmbracelet/bubbletea), which I used as
     the TUI framework
-  - [Lipgloss](github.com/charmbracelet/lipgloss), which I used to style text
-  - [Glamour](github.com/charmbracelet/glamour), which I used for the Markdown
-    preview.
+  - [Lipgloss](https://github.com/charmbracelet/lipgloss), which I used to style
+    text
+  - [Glamour](https://github.com/charmbracelet/glamour), which I used for the
+    Markdown preview.
 - Thanks to [Jonathon](https://github.com/Jonathon) for making the
   [Colossal](www.figlet.org/cgi-bin/fontdb_example.cgi?font=colossal.flf) font,
   which I used for the ASCII art in the help screen.
 - Thanks to [Hunter WB](https://github.com/hunterwb) for making
-  [AnyASCII](github.com/anyascii/anyascii), which I used to sanitize the file
-  inputs.
+  [AnyASCII](https://github.com/anyascii/anyascii), which I used to sanitize the
+  file inputs.
 - Thanks to the Go team for making the [Go Tour](https://go.dev/tour/) and to
   [Sonia Keys](https://github.com/soniakeys) for writing
   [Learn Go in Y Minutes](https://learnxinyminutes.com/go), both of which are

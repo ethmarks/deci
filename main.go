@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -30,11 +29,7 @@ func main() {
 	lines, err := readFile(filepath)
 
 	if err != nil {
-		if strings.Contains(err.Error(), "no such file or directory") {
-			lines = make([]string, 1)
-		} else {
-			log.Fatal(errStyle.Render(err.Error()))
-		}
+		lines = make([]string, 1)
 	}
 
 	p := tea.NewProgram(initialModel(lines, filepath))

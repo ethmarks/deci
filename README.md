@@ -1,5 +1,10 @@
 # deci
 
+[![GitHub Release](https://img.shields.io/github/v/release/ethmarks/deci)](https://github.com/ethmarks/deci/releases)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ethmarks/deci.svg)](https://pkg.go.dev/github.com/ethmarks/deci)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/ethmarks/deci)
+[![Demo](https://img.shields.io/badge/demo-live-green)](https://ethmarks.github.io/deci/)
+
 `deci` is a terminal text editor like `nano`. My first project in
 [Go](https://go.dev) using
 [Bubble Tea](https://github.com/charmbracelet/bubbletea) and the

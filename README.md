@@ -14,7 +14,8 @@
 
 ## Quickstart
 
-**Install `deci` by downloading the pre-built binary for your platform from the
+**Install `deci` by downloading the pre-built binary for your platform (Linux,
+Windows, or MacOS) from the
 [releases page](https://github.com/ethmarks/deci/releases).** If you have Go
 installed, you can also [build from source](#building-from-source) using this
 command:

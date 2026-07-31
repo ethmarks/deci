@@ -27,35 +27,6 @@ func readFile(filename string) ([]string, error) {
 	return lines, err
 }
 
-func createFile(filename string) error {
-	file, err := os.Create(filename)
-
-	if err != nil {
-		return err
-	}
-
-	file.Close()
-	return nil
-}
-
-func readOrCreateFile(filename string) ([]string, error, bool) {
-	lines, err := readFile(filename)
-	created := false
-
-	if err != nil {
-		// if we got an error reading it the first time, create it and try
-		// reading the file one more time.
-		err = createFile(filename)
-
-		if err == nil {
-			created = true
-			lines, err = readFile(filename)
-		}
-	}
-
-	return lines, err, created
-}
-
 func writeFileCmd(filename string, lines []string) tea.Cmd {
 	return func() tea.Msg {
 		data := []byte(strings.Join(lines, "\n"))

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -24,13 +25,17 @@ func main() {
 
 	filepath := args[1]
 
-	lines, err, created := readOrCreateFile(filepath)
+	lines, err := readFile(filepath)
 
 	if err != nil {
-		log.Fatal(errStyle.Render(err.Error()))
+		if strings.Contains(err.Error(), "no such file or directory") {
+			lines = make([]string, 1)
+		} else {
+			log.Fatal(errStyle.Render(err.Error()))
+		}
 	}
 
-	p := tea.NewProgram(initialModel(lines, filepath, created))
+	p := tea.NewProgram(initialModel(lines, filepath))
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)

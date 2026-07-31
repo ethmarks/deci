@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -51,13 +49,7 @@ type model struct {
 	historyIndex int
 }
 
-func initialModel(editorLines []string, filename string, created bool) model {
-	status := statusTextWelcome
-
-	if created {
-		status = fmt.Sprintf("Created %v", filename)
-	}
-
+func initialModel(editorLines []string, filename string) model {
 	m := model{
 		lines:       &editorLines,
 		editorLines: editorLines,
@@ -65,7 +57,7 @@ func initialModel(editorLines []string, filename string, created bool) model {
 
 		filename: filename,
 
-		status: status,
+		status: statusTextWelcome,
 		screen: Editor,
 
 		showNums:   true,

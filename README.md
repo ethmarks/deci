@@ -203,8 +203,8 @@ like how [Nano-](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
     text
   - [Glamour](https://github.com/charmbracelet/glamour), which I used for the
     Markdown preview.
-  - [VHS](https://github.com/charmbraceletvhs), which I used for the demo GIF in
-    this README.
+  - [VHS](https://github.com/charmbracelet/vhs), which I used for the demo GIF
+    in this README.
 - Thanks to [Jonathon](https://github.com/Jonathon) for making the
   [Colossal](https://www.figlet.org/cgi-bin/fontdb_example.cgi?font=colossal.flf)
   font, which I used for the ASCII art in the help screen.

@@ -5,10 +5,7 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/ethmarks/deci)
 [![Demo](https://img.shields.io/badge/demo-live-green)](https://ethmarks.github.io/deci/)
 
-`deci` is a terminal text editor like `nano`. My first project in
-[Go](https://go.dev) using
-[Bubble Tea](https://github.com/charmbracelet/bubbletea) and the
-[Charm ecosystem](https://github.com/charmbracelet).
+`deci` is a terminal text editor like `nano`.
 
 ![](./web/uploads/screenshot_0.4.1.png)
 
@@ -16,9 +13,9 @@
 
 **Install `deci` by downloading the pre-built binary for your platform (Linux,
 Windows, or MacOS) from the
-[releases page](https://github.com/ethmarks/deci/releases).** If you have Go
-installed, you can also [build from source](#building-from-source) using this
-command:
+[releases page](https://github.com/ethmarks/deci/releases).**
+
+Alternatively, if you have Go installed, you can install it using this command:
 
 ```sh
 go install github.com/ethmarks/deci@latest
@@ -75,9 +72,11 @@ implement:
 Cursor movement keybinds, which every editor supports, but were so complicated
 that they get their own category:
 
-_I modeled these behaviors by observing how the IDE that I use (Zed) handles
-cursor movement. I've also done some testing in VS Code, and it behaves the same
-as far as I can tell._
+> [!NOTE]
+> I modeled the cursor behavior by observing how the IDE that I use (Zed)
+> handles cursor movement. As far as I can tell, VS Code handles cursor movement
+> the same as Zed, and I assume that all editors handle cursor movement in
+> basically the same way. So the cursor movement should feel natural.
 
 - `up`: if the cursor is _not_ on the first line, moves the cursor up one line
   and either to the end of the current line or the last x position, whichever is
@@ -124,7 +123,7 @@ that the code is split into three distinct sections:
 
 ### Model
 
-The model ([model.go](./model.go)) stores the following stuff:
+The model ([`model.go`](./model.go)) stores the following stuff:
 
 - editor lines
 - lines to display (this is usually set as a pointer to the editor lines, but
@@ -143,8 +142,8 @@ The model ([model.go](./model.go)) stores the following stuff:
 
 ### View
 
-The view ([view.go](./view.go)) renders the model using an algorithm that works
-like this:
+The view ([`view.go`](./view.go)) renders the model using an algorithm that
+works like this:
 
 1. if there's an error message, display it and skip all the other steps
 2. calculate how many rows and columns the content pane (not including the
@@ -165,16 +164,15 @@ like this:
 
 ### Update
 
-The update ([update.go](./update.go)) processes events (which are called
-messages):
+The update ([`update.go`](./update.go)) logic processes events like this:
 
 1. if it's an error, set the model's error
 2. if it's a status update, set the model's status
 3. if it's a terminal resize, set the model's terminal size
 4. if it's a key press, match it to find which keybind it corresponds to, then
    run that keybind (see the [Keybinds section](#keybinds))
-5. if it's a clipboard paste event, iterate over each character as though it was
-   a key press
+5. if it's a clipboard paste, iterate over each character as though it was an
+   individual key press
 
 ## Building from Source
 
@@ -188,13 +186,13 @@ go build .
 
 ## Etymology
 
-[Deci](https://en.wikipedia.org/wiki/Deci-) is the Metric prefix for 10^-1, like
-how [Nano](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
+[Deci-](https://en.wikipedia.org/wiki/Deci-) is the Metric prefix for 10^-1,
+like how [Nano-](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
 
-| deci           | nano             |
-| -------------- | ---------------- |
-| pretty small   | _tiny_           |
-| not well known | extremely common |
+| Category                       | `deci`         | `nano`           |
+| ------------------------------ | -------------- | ---------------- |
+| binary size / prefix magnitude | pretty small   | _tiny_           |
+| popularity                     | not well known | extremely common |
 
 ## Acknowledgements
 
@@ -211,10 +209,11 @@ how [Nano](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
 - Thanks to [Hunter WB](https://github.com/hunterwb) for making
   [AnyASCII](https://github.com/anyascii/anyascii), which I used to sanitize the
   file inputs.
-- Thanks to the Go team for making the [Go Tour](https://go.dev/tour/) and to
+- This was my first project in [Go](https://go.dev)! Huge thanks to the Go team
+  for making the [Go Tour](https://go.dev/tour/) and to
   [Sonia Keys](https://github.com/soniakeys) for writing
   [Learn Go in Y Minutes](https://learnxinyminutes.com/go), both of which are
-  super helpful resources that I used to learn Go for this project.
+  super helpful resources for learning Go.
 
 ## License
 

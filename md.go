@@ -39,10 +39,15 @@ func (style glamourStyle) String() string {
 	}
 }
 
-func previewMd(editorLines []string, style glamourStyle) ([]string, error) {
+func previewMd(editorLines []string, style glamourStyle, termWidth int) ([]string, error) {
 	in := strings.Join(editorLines, "\n")
 
-	out, err := glamour.Render(in, style.String())
+	r, _ := glamour.NewTermRenderer(
+		glamour.WithWordWrap(min(termWidth, 80)),
+		glamour.WithStylePath(style.String()),
+	)
+
+	out, err := r.Render(in)
 
 	if err != nil {
 		return nil, err

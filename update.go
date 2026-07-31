@@ -148,7 +148,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.showNums = false
 		m.pagerMode = true
 	case Preview:
-		md, err := previewMd(m.editorLines, m.previewStyle)
+		md, err := previewMd(m.editorLines, m.previewStyle, m.termWidth)
 
 		if err != nil {
 			m.err = err

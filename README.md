@@ -104,6 +104,72 @@ Special keybinds:
 - `alt+p`: changes the Markdown preview theme
 - `alt+c`: changes the cursor shape
 
+## How it Works
+
+`deci` uses the [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+framework, so it adopts inherits
+[The Elm Architecture](https://guide.elm-lang.org/architecture/), which means
+that the code is split into three distinct sections:
+
+- [Model](#model), which stores the _entire_ state of the editor
+- [View](#view), which inputs 1 model and outputs 1 fully rendered terminal
+  screen
+- [Update](#update), which modifies the model based on events (like keypresses)
+
+### Model
+
+The model ([model.go](./model.go)) stores the following stuff:
+
+- editor lines
+- lines to display (this is usually set as a pointer to the editor lines, but
+  it's swapped out for the help lines or the preview lines when those screens
+  are active)
+- filename to write out to
+- status message
+- error message, if there is one
+- active screen (editor, help, or preview)
+- cursor position
+- dimensions of the terminal window
+- viewport offset (for horizontal and vertical scrolling)
+- preview style
+- cursor shape
+- undo buffer history
+
+### View
+
+The view ([view.go](./view.go)) renders the model using an algorithm that works
+like this:
+
+1. if there's an error message, display it and skip all the other steps
+2. calculate how many rows and columns the content pane (not including the
+   header, footer, or line numbers) should have
+3. convert the lines into one big formatted string
+   1. iterate over each line in the editor
+   2. if the current iteration index equals the cursor Y position, highlight the
+      background of the line
+   3. trim the line content from both sides to fit horizontally in the viewport
+   4. if line numbers are enabled (which only happens on editor screen), prepend
+      them to the line
+   5. append the line (optionally with the line numbers) to the big string
+4. render the header, status bar, and keybind bar
+5. join the header, content, status bar, and keybind bar (in that order) into
+   one big string
+6. set the cursor position and shape
+7. send the final string to Bubble Tea to be rendered
+
+### Update
+
+The update ([update.go](./update.go)) processes events (which are called
+messages):
+
+1. if it's an error, set the model's error
+2. if it's a status update, set the model's status
+3. if it's a terminal resize, set the model's terminal size
+4. if it's a key press, match it to find which keybind it corresponds to, then
+   run that keybind (see the [Keybinds section](#keybinds))
+5. if it's a clipboard paste event, iterate over each character as though it was
+   a key press
+
 ## Building from Source
 
 (requires Go 1.21+)

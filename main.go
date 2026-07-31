@@ -17,13 +17,15 @@ func main() {
 	// first arg is always the path of the program
 	args := os.Args
 
-	if len(args) == 1 {
-		log.Fatal(errStyle.Render("You must provide a file as an argument"))
-	} else if len(args) > 2 {
+	if len(args) > 2 {
 		log.Fatal(errStyle.Render("Too many arguments!"))
 	}
 
-	filepath := args[1]
+	filepath := "deci_out.txt"
+
+	if len(args) == 2 {
+		filepath = args[1]
+	}
 
 	lines, err := readFile(filepath)
 

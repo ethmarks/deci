@@ -17,7 +17,7 @@ Your second-to-last next editor {.subtitle}
 
 Deci is a terminal text editor like [nano](https://nano-editor.org/).
 
-![](/uploads/screenshot_0.4.1.png)
+![](/uploads/demo.gif)
 
 ## Installation
 

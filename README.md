@@ -7,7 +7,7 @@
 
 `deci` is a terminal text editor like `nano`.
 
-![](./.github/demo.gif)
+![](./web/uploads/demo.gif)
 
 ## Quickstart
 

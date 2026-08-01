@@ -1,4 +1,4 @@
-Output demo.gif
+Output web/uploads/demo.gif
 Set FontSize 26
 Set Theme "Dracula"
 Set Width 1200

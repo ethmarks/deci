@@ -12,7 +12,14 @@ const getImg = (file: string): string =>
 	`
 <h3>${file}</h3>
 <p>
-<img alt=${file} src="/uploads/${file}.png"/>
+<img
+alt=${file}
+src="/uploads/${file}.png"
+image-size
+loading="lazy"
+decoding="async"
+fetchpriority="auto"
+class="responsive"/>
 </p>
 `;
 

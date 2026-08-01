@@ -1,6 +1,6 @@
 ---
 title: Deci
-description: deci is a text editor like nano
+description: deci is a terminal text editor like nano
 layout: layouts/home.vto
 blogList:
   filter: layout=layouts/blog-single.vto
@@ -45,3 +45,7 @@ exist, deci will create it once you save.
 ```sh
 deci myfile.txt
 ```
+
+## Gallery
+
+Check out the [Gallery](/gallery) to see more screenshots.

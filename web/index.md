@@ -15,6 +15,13 @@ blogList:
 
 Your second-to-last next editor {.subtitle}
 
+<div>
+	<a href="https://github.com/ethmarks/deci/releases"><img src="https://img.shields.io/github/v/release/ethmarks/deci" alt="GitHub Release" /></a>
+	<a href="https://pkg.go.dev/github.com/ethmarks/deci"><img src="https://pkg.go.dev/badge/github.com/ethmarks/deci.svg" alt="Go Reference" /></a>
+	<a href="https://github.com/ethmarks/deci"><img src="https://img.shields.io/badge/github-repo-blue?logo=github" alt="GitHub" /></a>
+	<a href="https://ethmarks.github.io/deci/"><img src="https://img.shields.io/badge/demo-live-green" alt="Demo" /></a>
+</div>
+
 Deci is a terminal text editor like [nano](https://nano-editor.org/).
 
 ![](/uploads/demo.gif)
@@ -24,18 +31,16 @@ Deci is a terminal text editor like [nano](https://nano-editor.org/).
 The easiest way to install deci is to download a
 [pre-built binary](https://github.com/ethmarks/deci/releases).
 
-You can also build from source (requires [Go](https://go.dev/dl/)):
+You can also install it with Go:
 
 ```sh
-git clone https://github.com/ethmarks/deci.git
-cd deci
-go build
+go install github.com/ethmarks/deci@latest
 ```
 
 ## Usage
 
 Just run `deci` followed by the name of the file you want to edit. If it doesn't
-exist, deci will create it.
+exist, deci will create it once you save.
 
 ```sh
 deci myfile.txt

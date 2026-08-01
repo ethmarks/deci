@@ -48,4 +48,4 @@ deci myfile.txt
 
 ## Gallery
 
-Check out the [Gallery](/gallery) to see more screenshots.
+Check out the [Gallery](/gallery) to see screenshots.

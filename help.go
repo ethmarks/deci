@@ -133,3 +133,15 @@ func getHelpLines() []string {
 }
 
 var helpLines = getHelpLines()
+
+var helpCliMsg = `
+  Usage:
+    deci [path]
+
+  Options:
+    -h, --help        Show this help
+    -v, --version     The version of deci
+
+  Example:
+    deci myfile.txt
+`

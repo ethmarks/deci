@@ -30,6 +30,11 @@ func main() {
 			os.Exit(0)
 		}
 
+		if arg == "--help" || arg == "-h" {
+			fmt.Print(helpCliMsg)
+			os.Exit(0)
+		}
+
 		filepath = arg
 	}
 

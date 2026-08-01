@@ -23,7 +23,14 @@ func main() {
 	filepath := "deci_out.txt"
 
 	if len(args) == 2 {
-		filepath = args[1]
+		arg := args[1]
+
+		if arg == "--version" || arg == "-v" {
+			fmt.Printf("deci %v\n", version)
+			os.Exit(0)
+		}
+
+		filepath = arg
 	}
 
 	lines, err := readFile(filepath)

@@ -47,6 +47,8 @@ file.
 
 ## Keybinds
 
+![](./web/uploads/help.png)
+
 `deci` has unique behavior for 112 keybinds in total.
 
 Basic keybinds that every editor has but which still required a _lot_ of code to
@@ -110,6 +112,8 @@ Special keybinds:
 - `alt+c`: changes the cursor shape
 
 ## How it Works
+
+![](./web/uploads/code.png)
 
 `deci` uses the [Bubble Tea](https://github.com/charmbracelet/bubbletea)
 framework, so it inherits
@@ -185,6 +189,8 @@ go build .
 ```
 
 ## Etymology
+
+![](./web/uploads/preview.png)
 
 [Deci-](https://en.wikipedia.org/wiki/Deci-) is the Metric prefix for 10^-1,
 like how [Nano-](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.

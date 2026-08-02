@@ -217,6 +217,9 @@ like how [Nano-](https://en.wikipedia.org/wiki/Nano-) is the prefix for 10^-9.
 - Thanks to [Hunter WB](https://github.com/hunterwb) for making
   [AnyASCII](https://github.com/anyascii/anyascii), which I used to sanitize the
   file inputs.
+- Thanks to [Óscar Otero](https://github.com/oscarotero) for making
+  [Lume SSG](https://lume.land/), which I used for the
+  [Deci website](https://ethmarks.github.io/deci/).
 - This was my first project in [Go](https://go.dev)! Huge thanks to the Go team
   for making the [Go Tour](https://go.dev/tour/) and to
   [Sonia Keys](https://github.com/soniakeys) for writing

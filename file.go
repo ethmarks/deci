@@ -9,10 +9,10 @@ import (
 	"github.com/anyascii/go"
 )
 
-func readFile(filename string) ([]string, error) {
+func readFile(filepath string) ([]string, error) {
 	lines := make([]string, 1)
 
-	data, err := os.ReadFile(filename)
+	data, err := os.ReadFile(filepath)
 
 	if err == nil {
 		s := string(data)
@@ -27,7 +27,7 @@ func readFile(filename string) ([]string, error) {
 	return lines, err
 }
 
-func writeFileCmd(filename string, lines []string) tea.Cmd {
+func writeFileCmd(filepath string, lines []string) tea.Cmd {
 	return func() tea.Msg {
 		data := []byte(strings.Join(lines, "\n"))
 
@@ -35,7 +35,7 @@ func writeFileCmd(filename string, lines []string) tea.Cmd {
 		// https://pkg.go.dev/os#WriteFile
 		perm := os.FileMode(0666)
 
-		err := os.WriteFile(filename, data, perm)
+		err := os.WriteFile(filepath, data, perm)
 
 		if err != nil {
 			return errMsg{err}

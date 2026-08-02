@@ -17,29 +17,39 @@ var (
 
 	headerLeftStyle  = lipgloss.NewStyle().PaddingLeft(headerPadding)
 	headerRightStyle = lipgloss.NewStyle().PaddingRight(headerPadding)
-	headerStyle      = lipgloss.NewStyle().
-				Foreground(lipgloss.Black).
-				Background(lipgloss.White)
+	headerStyle      = lipgloss.NewStyle().Reverse(true)
 )
 
-func getHeader(termWidth int) string {
+func getCenterText(file string) string {
+	if file == defaultFilepath {
+		return ""
+	}
+
+	return file
+}
+
+func getHeader(centerText string, termWidth int) string {
 	left := headerLeftStyle.Render(headerTextLeft)
 	right := headerRightStyle.Render(headerTextRight)
+	center := centerText
 
 	leftWidth := lipgloss.Width(left)
 	rightWidth := lipgloss.Width(right)
+	centerWidth := lipgloss.Width(center)
 
-	spacerWidth := termWidth - leftWidth - rightWidth
+	spacerWidth := termWidth - leftWidth - rightWidth - centerWidth
 	if spacerWidth < 0 {
 		spacerWidth = 0
 	}
 
-	spacer := strings.Repeat(" ", spacerWidth)
+	halfSpacer := strings.Repeat(" ", spacerWidth/2)
 
 	raw := lipgloss.JoinHorizontal(
 		lipgloss.Top,
 		left,
-		spacer,
+		halfSpacer,
+		center,
+		halfSpacer,
 		right,
 	)
 

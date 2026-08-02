@@ -133,7 +133,7 @@ The model ([`model.go`](./model.go)) stores the following stuff:
 - lines to display (this is usually set as a pointer to the editor lines, but
   it's swapped out for the help lines or the preview lines when those screens
   are active)
-- filename to write out to
+- filepath to write out to
 - status message
 - error message, if there is one
 - active screen (editor, help, or preview)

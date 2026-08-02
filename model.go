@@ -16,7 +16,7 @@ type model struct {
 	lines       *[]string
 	editorLines []string
 
-	filename string
+	filepath string
 
 	status string
 	err    error
@@ -48,12 +48,12 @@ type model struct {
 	historyIndex int
 }
 
-func initialModel(editorLines []string, filename string) model {
+func initialModel(editorLines []string, filepath string) model {
 	m := model{
 		lines:       &editorLines,
 		editorLines: editorLines,
 
-		filename: filename,
+		filepath: filepath,
 
 		status: statusTextWelcome,
 		screen: Editor,

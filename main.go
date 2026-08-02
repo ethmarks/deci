@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	version = "0.4.4"
+	version         = "0.4.4"
+	defaultFilepath = "deci_out.txt"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 		log.Fatal(errStyle.Render("Too many arguments!"))
 	}
 
-	filepath := "deci_out.txt"
+	filepath := defaultFilepath
 
 	if len(args) == 2 {
 		arg := args[1]

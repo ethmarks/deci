@@ -62,7 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// These keys should write out.
 		case "ctrl+s", "ctrl+o":
 			if m.screen == Editor {
-				return m, writeFileCmd(m.filename, m.editorLines)
+				return m, writeFileCmd(m.filepath, m.editorLines)
 			} else {
 				return m, nil
 			}

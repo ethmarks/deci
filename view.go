@@ -40,7 +40,7 @@ func (m model) View() tea.View {
 		m.showNums, m.rawContent, m.pagerMode,
 	)
 
-	header := getHeader(m.termWidth)
+	header := getHeader(getCenterText(m.filepath), m.termWidth)
 	statusBar := getStatusBar(m.status, m.termWidth)
 	keybindBar := m.getKeybindBar()
 

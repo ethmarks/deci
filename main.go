@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	version         = "0.4.4"
+	version         = "1.0.0"
 	defaultFilepath = "deci_out.txt"
 )
 

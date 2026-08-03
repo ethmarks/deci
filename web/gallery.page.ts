@@ -32,7 +32,14 @@ const screenshotHTML = `
 	</section>
 	`;
 
-const versions: string[] = ["v0.4.1", "v0.3.0", "v0.2.2", "v0.2.0", "v0.1.0"];
+const versions: string[] = [
+	"v1.0.0",
+	"v0.4.1",
+	"v0.3.0",
+	"v0.2.2",
+	"v0.2.0",
+	"v0.1.0",
+];
 const versionHTML = `
 	<section>
 	<h2>Versions</h2>
